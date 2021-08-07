@@ -16,6 +16,7 @@ data class IcsEventModel(
     val dtstart: LocalDateTime,
 ) {
     companion object {
+        @JvmStatic
         fun fromEntity(e: IcsEvent) = IcsEventModel(
             dtend = e.dtend,
             uid = e.uid,

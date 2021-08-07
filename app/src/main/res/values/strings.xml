@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Minitel Toolbox Lite</string>
+    <string name="hello_blank_fragment">TODO Blank fragment</string>
+    <string name="username_hint">firstname.lastname</string>
+    <string name="username_label">Username</string>
+    <string name="password_hint">********</string>
+    <string name="password_label">Password</string>
+    <string name="login">Login</string>
+    <string name="event_time_format">%s - %s</string>
 </resources>

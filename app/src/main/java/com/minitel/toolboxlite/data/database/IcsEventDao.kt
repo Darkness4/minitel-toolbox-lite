@@ -15,6 +15,9 @@ interface IcsEventDao {
     fun watch(): Flow<List<IcsEventModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(items: List<IcsEventModel>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(vararg items: IcsEventModel)
 
     @Query("DELETE FROM ics_events")

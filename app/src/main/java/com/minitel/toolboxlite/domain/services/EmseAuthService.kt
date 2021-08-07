@@ -1,9 +1,8 @@
 package com.minitel.toolboxlite.domain.services
 
-import kotlinx.coroutines.flow.Flow
-import okhttp3.Cookie
+import com.minitel.toolboxlite.core.errors.FailedLogin
 
 interface EmseAuthService {
-    suspend fun login(username: String, password: String)
-    fun watchCookie(): Flow<Cookie>
+    @Throws(FailedLogin::class)
+    suspend fun login(username: String, password: String, service: String): String
 }
