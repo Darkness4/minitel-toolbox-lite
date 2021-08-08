@@ -1,6 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".presentation.ui.calendar.CalendarFragment">
 
-</LinearLayout>
+    <data>
+
+        <variable
+            name="monthData"
+            type="com.minitel.toolboxlite.presentation.adapters.MonthListAdapter.MonthData" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView_month"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="@{monthData.month.toString()}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            tools:text="October" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_days"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:days="@{monthData.days}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_day" />
+    </LinearLayout>
+</layout>

@@ -2,7 +2,12 @@ package com.minitel.toolboxlite.presentation.utils
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.minitel.toolboxlite.R
+import com.minitel.toolboxlite.domain.entities.calendar.IcsEvent
+import com.minitel.toolboxlite.presentation.adapters.DayListAdapter
+import com.minitel.toolboxlite.presentation.adapters.EventListAdapter
+import com.minitel.toolboxlite.presentation.adapters.MonthListAdapter
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -16,4 +21,37 @@ fun formatDateTimeInterval(
         dtstart.format(DateTimeFormatter.ofPattern("HH:mm")),
         dtend.format(DateTimeFormatter.ofPattern("HH:mm"))
     )
+}
+
+@BindingAdapter("months")
+fun bindMonthList(
+    view: RecyclerView,
+    months: List<MonthListAdapter.MonthData>?,
+) {
+    val adapter = view.adapter as MonthListAdapter
+    months?.let {
+        adapter.submitList(months)
+    }
+}
+
+@BindingAdapter("days")
+fun bindDayList(
+    view: RecyclerView,
+    days: List<DayListAdapter.DayData>?,
+) {
+    val adapter = view.adapter as DayListAdapter
+    days?.let {
+        adapter.submitList(days)
+    }
+}
+
+@BindingAdapter("events")
+fun bindEventList(
+    view: RecyclerView,
+    events: List<IcsEvent>?,
+) {
+    val adapter = view.adapter as EventListAdapter
+    events?.let {
+        adapter.submitList(events)
+    }
 }

@@ -51,3 +51,9 @@ inline fun <R, T> State<T>.map(transform: (value: T) -> R): State<R> =
         is State.Success -> State.Success(transform(value))
         is State.Failure -> State.Failure(throwable)
     }
+
+inline fun <T> tryOrCatch(action: () -> T): State<T> = try {
+    State.Success(action())
+} catch (e: Exception) {
+    State.Failure(e)
+}

@@ -1,3 +1,3 @@
 package com.minitel.toolboxlite.core.errors
 
-object FormNotFound : RuntimeException()
+object FormNotFound : RuntimeException("Form not found")

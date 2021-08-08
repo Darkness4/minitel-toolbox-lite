@@ -1,3 +1,3 @@
 package com.minitel.toolboxlite.core.errors
 
-object FailedLogin : RuntimeException()
+object FailedLogin : RuntimeException("Couldn't login")
