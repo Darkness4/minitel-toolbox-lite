@@ -2,6 +2,7 @@ package com.minitel.toolboxlite.domain.services
 
 import com.minitel.toolboxlite.core.errors.CannotFetchIcs
 import com.minitel.toolboxlite.core.errors.FailedLogin
+import kotlinx.coroutines.flow.Flow
 
 interface EmseAuthService {
     @Throws(FailedLogin::class)
@@ -13,5 +14,5 @@ interface EmseAuthService {
     @Throws(CannotFetchIcs::class)
     suspend fun findIcs(): String
 
-    suspend fun isSignedIn(): Boolean
+    fun isSignedIn(): Flow<Boolean>
 }

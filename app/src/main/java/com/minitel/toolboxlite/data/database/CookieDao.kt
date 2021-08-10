@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.minitel.toolboxlite.data.models.CookieModel
+import kotlinx.coroutines.flow.Flow
 
 /** Cache for storing the `CookieModel`. */
 @Dao
@@ -13,7 +14,10 @@ interface CookieDao {
     @Query("SELECT * FROM cookies")
     suspend fun get(): List<CookieModel>
 
-    @Query("DELETE FROM cookies WHERE expires < :timestamp")
+    @Query("SELECT * FROM cookies")
+    fun getFlow(): Flow<List<CookieModel>>
+
+    @Query("DELETE FROM cookies WHERE expires <> NULL AND expires < :timestamp")
     suspend fun cleanup(timestamp: Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

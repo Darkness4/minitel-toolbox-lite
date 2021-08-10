@@ -9,7 +9,9 @@ import com.minitel.toolboxlite.domain.services.IcsDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,7 +24,8 @@ class LoginViewModel @Inject constructor(
     val password = MutableStateFlow("")
     val rememberMe = MutableStateFlow(false)
 
-    val isEmseLoggedIn = MutableStateFlow(false)
+    val isEmseLoggedIn =
+        emseAuthService.isSignedIn().stateIn(viewModelScope, SharingStarted.Lazily, false)
     val isIcsSaved = MutableStateFlow(false)
     val icsUrl = MutableStateFlow("Not found")
 

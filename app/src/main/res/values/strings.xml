@@ -6,7 +6,7 @@
     <string name="password_hint">********</string>
     <string name="password_label">Password</string>
     <string name="login">Login</string>
-    <string name="event_time_format">%s - %s</string>
+    <string name="event_time_format">%1$s - %2$s</string>
     <string name="calendar">Calendar</string>
     <string name="channel_id">ics_event</string>
     <string name="channel_description">Receive agenda notification</string>

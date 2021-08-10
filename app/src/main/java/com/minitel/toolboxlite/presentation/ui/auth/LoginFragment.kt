@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.minitel.toolboxlite.core.state.doOnFailure
@@ -17,6 +18,7 @@ import com.minitel.toolboxlite.data.datastore.update
 import com.minitel.toolboxlite.databinding.FragmentLoginBinding
 import com.minitel.toolboxlite.domain.services.EmseAuthService
 import com.minitel.toolboxlite.presentation.viewmodels.LoginViewModel
+import com.minitel.toolboxlite.presentation.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
@@ -27,6 +29,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private val viewModel by viewModels<LoginViewModel>()
+    private val activityViewModel by activityViewModels<MainViewModel>()
 
     @Inject
     lateinit var emseAuthService: EmseAuthService
@@ -59,10 +62,6 @@ class LoginFragment : Fragment() {
             }
         }
 
-        lifecycleScope.launch {
-            viewModel.isEmseLoggedIn.value = emseAuthService.isSignedIn()
-        }
-
         return binding.root
     }
 
@@ -80,7 +79,6 @@ class LoginFragment : Fragment() {
                             viewModel.password.value
                         )
                         val path = emseAuthService.findIcs()
-                        viewModel.isEmseLoggedIn.value = true
                         requireContext().icsReferenceDataStore.updateData {
                             IcsReference.newBuilder()
                                 .setUsername(viewModel.username.value)
@@ -95,7 +93,6 @@ class LoginFragment : Fragment() {
                             Toast.LENGTH_LONG
                         ).show()
                         Timber.e(e)
-                        viewModel.isEmseLoggedIn.value = false
                     },
                     onLoading = {
                         Toast.makeText(requireContext(), "Signing in...", Toast.LENGTH_SHORT).show()
@@ -122,6 +119,7 @@ class LoginFragment : Fragment() {
         icsReferenceJob = lifecycleScope.launch {
             requireContext().icsReferenceDataStore.data.collect {
                 if (it.path.isNotBlank()) {
+                    activityViewModel.showBottomBar.value = true
                     viewModel.isIcsSaved.value = true
                     viewModel.icsUrl.value = it.path
                     viewModel.doDownload(it.path)
