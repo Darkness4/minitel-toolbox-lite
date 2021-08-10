@@ -13,4 +13,11 @@
     <string name="channel_name">Agenda</string>
     <string name="remember_me">Remember me</string>
     <string name="agenda_empty">Your agenda is empty</string>
+    <string name="emse_portal_status">EMSE Portal status</string>
+    <string name="agenda_status">Agenda status</string>
+    <string name="agenda_url_label">Agenda URL</string>
+    <string name="saved">Saved</string>
+    <string name="not_saved">Not Saved</string>
+    <string name="signed_in">Signed In</string>
+    <string name="signed_out">Signed out</string>
 </resources>

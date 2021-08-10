@@ -3,9 +3,12 @@ package com.minitel.toolboxlite.core.di
 import android.content.Context
 import androidx.room.Room
 import com.minitel.toolboxlite.BuildConfig
+import com.minitel.toolboxlite.data.database.CookieDao
 import com.minitel.toolboxlite.data.database.Database
 import com.minitel.toolboxlite.data.database.IcsEventDao
 import com.minitel.toolboxlite.data.database.converters.LocalDateTimeConverters
+import com.minitel.toolboxlite.data.database.converters.MapConverters
+import com.minitel.toolboxlite.data.ktor.PersistentCookiesStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,8 +16,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.features.cookies.AcceptAllCookiesStorage
 import io.ktor.client.features.cookies.HttpCookies
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import javax.inject.Singleton
@@ -24,7 +27,7 @@ import javax.inject.Singleton
 object DataModule {
     @Provides
     @Singleton
-    fun provideKtorClient(client: OkHttpClient) = HttpClient(OkHttp) {
+    fun provideKtorClient(client: OkHttpClient, persistentCookiesStorage: PersistentCookiesStorage) = HttpClient(OkHttp) {
         engine {
             config {
                 followRedirects(false)
@@ -35,9 +38,13 @@ object DataModule {
         }
 
         install(HttpCookies) {
-            storage = AcceptAllCookiesStorage()
+            storage = persistentCookiesStorage
         }
     }
+
+    @Provides
+    @Singleton
+    fun providePersistentCookiesStorage(cookieDao: CookieDao) = PersistentCookiesStorage(cookieDao)
 
     @Provides
     @Singleton
@@ -45,7 +52,7 @@ object DataModule {
         return when {
             BuildConfig.DEBUG -> {
                 val interceptor =
-                    HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+                    HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS)
                 OkHttpClient.Builder().addInterceptor(interceptor).build()
             }
             else -> OkHttpClient()
@@ -54,9 +61,15 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideRoomDatabase(@ApplicationContext context: Context): Database {
+    fun provideJson() = Json { isLenient = true }
+
+    @Singleton
+    @Provides
+    fun provideRoomDatabase(@ApplicationContext context: Context, json: Json): Database {
+        val mapConverters = MapConverters.create(json)
         return Room.databaseBuilder(context, Database::class.java, "cache.db")
             .addTypeConverter(LocalDateTimeConverters())
+            .addTypeConverter(mapConverters)
             .build()
     }
 
@@ -64,5 +77,11 @@ object DataModule {
     @Provides
     fun provideIcsEventDao(database: Database): IcsEventDao {
         return database.icsEventDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCookieDao(database: Database): CookieDao {
+        return database.cookieDao()
     }
 }

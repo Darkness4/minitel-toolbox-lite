@@ -10,19 +10,26 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.minitel.toolboxlite.core.state.doOnFailure
 import com.minitel.toolboxlite.core.state.fold
+import com.minitel.toolboxlite.data.datastore.IcsReference
+import com.minitel.toolboxlite.data.datastore.icsReferenceDataStore
 import com.minitel.toolboxlite.data.datastore.loginSettingsDataStore
 import com.minitel.toolboxlite.data.datastore.update
 import com.minitel.toolboxlite.databinding.FragmentLoginBinding
+import com.minitel.toolboxlite.domain.services.EmseAuthService
 import com.minitel.toolboxlite.presentation.viewmodels.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
     private val viewModel by viewModels<LoginViewModel>()
+
+    @Inject
+    lateinit var emseAuthService: EmseAuthService
 
     private var _binding: FragmentLoginBinding? = null
     private val binding: FragmentLoginBinding
@@ -31,6 +38,7 @@ class LoginFragment : Fragment() {
     private var loginJob: Job? = null
     private var downloadJob: Job? = null
     private var loginSettingsJob: Job? = null
+    private var icsReferenceJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +59,10 @@ class LoginFragment : Fragment() {
             }
         }
 
+        lifecycleScope.launch {
+            viewModel.isEmseLoggedIn.value = emseAuthService.isSignedIn()
+        }
+
         return binding.root
     }
 
@@ -61,23 +73,32 @@ class LoginFragment : Fragment() {
             viewModel.login.collect {
                 it?.fold(
                     onSuccess = {
-                        Toast.makeText(context, "Success", Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
                         requireContext().loginSettingsDataStore.update(
                             viewModel.rememberMe.value,
                             viewModel.username.value,
                             viewModel.password.value
                         )
+                        val path = emseAuthService.findIcs()
+                        viewModel.isEmseLoggedIn.value = true
+                        requireContext().icsReferenceDataStore.updateData {
+                            IcsReference.newBuilder()
+                                .setUsername(viewModel.username.value)
+                                .setPath(path)
+                                .build()
+                        }
                     },
                     onFailure = { e ->
                         Toast.makeText(
-                            context,
+                            requireContext(),
                             e.localizedMessage ?: "Something wrong happened",
                             Toast.LENGTH_LONG
                         ).show()
                         Timber.e(e)
+                        viewModel.isEmseLoggedIn.value = false
                     },
                     onLoading = {
-                        Toast.makeText(context, "Signing in...", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "Signing in...", Toast.LENGTH_SHORT).show()
                     }
                 )
                 it?.let { viewModel.loginFinished() }
@@ -88,7 +109,7 @@ class LoginFragment : Fragment() {
             viewModel.download.collect {
                 it?.doOnFailure { e ->
                     Toast.makeText(
-                        context,
+                        requireContext(),
                         e.localizedMessage ?: "Something wrong happened",
                         Toast.LENGTH_LONG
                     ).show()
@@ -97,12 +118,23 @@ class LoginFragment : Fragment() {
                 it?.let { viewModel.downloadFinished() }
             }
         }
+
+        icsReferenceJob = lifecycleScope.launch {
+            requireContext().icsReferenceDataStore.data.collect {
+                if (it.path.isNotBlank()) {
+                    viewModel.isIcsSaved.value = true
+                    viewModel.icsUrl.value = it.path
+                    viewModel.doDownload(it.path)
+                }
+            }
+        }
     }
 
     override fun onStop() {
         loginJob = null
         downloadJob = null
         loginSettingsJob = null
+        icsReferenceJob = null
         super.onStop()
     }
 

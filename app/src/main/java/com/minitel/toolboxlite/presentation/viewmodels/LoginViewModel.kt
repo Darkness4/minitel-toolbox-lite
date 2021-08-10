@@ -3,7 +3,6 @@ package com.minitel.toolboxlite.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minitel.toolboxlite.core.state.State
-import com.minitel.toolboxlite.core.state.doOnSuccess
 import com.minitel.toolboxlite.core.state.tryOrCatch
 import com.minitel.toolboxlite.domain.services.EmseAuthService
 import com.minitel.toolboxlite.domain.services.IcsDownloader
@@ -23,6 +22,10 @@ class LoginViewModel @Inject constructor(
     val password = MutableStateFlow("")
     val rememberMe = MutableStateFlow(false)
 
+    val isEmseLoggedIn = MutableStateFlow(false)
+    val isIcsSaved = MutableStateFlow(false)
+    val icsUrl = MutableStateFlow("Not found")
+
     private val _login = MutableStateFlow<State<String>?>(null)
     val login: StateFlow<State<String>?>
         get() = _login
@@ -30,9 +33,6 @@ class LoginViewModel @Inject constructor(
     fun doLogin() = viewModelScope.launch {
         _login.value = State.Loading()
         _login.value = tryOrCatch { emseAuthService.loginForIcs(username.value, password.value) }
-        login.value?.doOnSuccess {
-            doDownload()
-        }
     }
 
     fun loginFinished() {
@@ -43,9 +43,8 @@ class LoginViewModel @Inject constructor(
     val download: StateFlow<State<Unit>?>
         get() = _download
 
-    private fun doDownload() = viewModelScope.launch(Dispatchers.Default) {
+    fun doDownload(path: String) = viewModelScope.launch(Dispatchers.Default) {
         _download.value = tryOrCatch {
-            val path = emseAuthService.findIcs()
             icsDownloader.download(path)
         }
     }
