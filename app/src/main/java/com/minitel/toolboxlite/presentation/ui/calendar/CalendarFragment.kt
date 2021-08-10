@@ -4,19 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import com.minitel.toolboxlite.core.state.doOnFailure
 import com.minitel.toolboxlite.databinding.FragmentCalendarBinding
+import com.minitel.toolboxlite.domain.services.IcsEventScheduler
 import com.minitel.toolboxlite.presentation.adapters.MonthListAdapter
 import com.minitel.toolboxlite.presentation.viewmodels.CalendarViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CalendarFragment : Fragment() {
@@ -26,7 +25,10 @@ class CalendarFragment : Fragment() {
     private val binding: FragmentCalendarBinding
         get() = _binding!!
 
-    private var downloadJob: Job? = null
+    @Inject
+    lateinit var icsEventScheduler: IcsEventScheduler
+
+    private var icsEventsJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,20 +45,15 @@ class CalendarFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-
-        downloadJob = lifecycleScope.launch {
-            viewModel.download.collect {
-                it?.doOnFailure { e ->
-                    Toast.makeText(context, e.localizedMessage ?: "Something wrong happened", Toast.LENGTH_LONG).show()
-                    Timber.e(e)
-                }
-                it?.let { viewModel.downloadFinished() }
+        icsEventsJob = lifecycleScope.launch {
+            viewModel.events.collect { list ->
+                list.forEach { icsEventScheduler.schedule(requireContext(), it) }
             }
         }
     }
 
     override fun onStop() {
-        downloadJob = null
+        icsEventsJob = null
         super.onStop()
     }
 

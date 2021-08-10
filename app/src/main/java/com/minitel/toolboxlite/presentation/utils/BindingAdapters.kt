@@ -1,5 +1,6 @@
 package com.minitel.toolboxlite.presentation.utils
 
+import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +31,19 @@ fun bindMonthList(
 ) {
     val adapter = view.adapter as MonthListAdapter
     months?.let {
-        adapter.submitList(months)
+        adapter.submitList(months.sortedWith(compareBy({ it.year }, { it.month })))
+    }
+}
+
+@BindingAdapter("showWhenMonthsIsEmpty")
+fun showWhenMonthsIsEmpty(
+    view: View,
+    months: List<MonthListAdapter.MonthData>?,
+) {
+    view.visibility = if (months.isNullOrEmpty()) {
+        View.VISIBLE
+    } else {
+        View.GONE
     }
 }
 
@@ -41,7 +54,7 @@ fun bindDayList(
 ) {
     val adapter = view.adapter as DayListAdapter
     days?.let {
-        adapter.submitList(days)
+        adapter.submitList(days.sortedBy { it.dtstart })
     }
 }
 
@@ -52,6 +65,6 @@ fun bindEventList(
 ) {
     val adapter = view.adapter as EventListAdapter
     events?.let {
-        adapter.submitList(events)
+        adapter.submitList(events.sortedWith(compareBy({ it.dtstart }, { it.dtend })))
     }
 }

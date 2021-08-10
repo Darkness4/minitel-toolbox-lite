@@ -12,4 +12,6 @@ interface EmseAuthService {
 
     @Throws(CannotFetchIcs::class)
     suspend fun findIcs(): String
+
+    suspend fun isSignedIn(): Boolean
 }

@@ -11,14 +11,32 @@
             type="com.minitel.toolboxlite.presentation.viewmodels.CalendarViewModel" />
     </data>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_months"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:scrollbars="vertical"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:months="@{viewModel.months}"
-        tools:itemCount="2"
-        tools:listitem="@layout/item_month" />
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_months"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:months="@{viewModel.months}"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_month" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/agenda_empty"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            app:showWhenMonthsIsEmpty="@{viewModel.months}"
+            app:layout_constraintBottom_toBottomOf="@+id/recyclerView_months"
+            app:layout_constraintEnd_toEndOf="@+id/recyclerView_months"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

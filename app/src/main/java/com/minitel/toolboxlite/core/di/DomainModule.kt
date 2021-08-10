@@ -6,6 +6,8 @@ import com.minitel.toolboxlite.data.services.IcsDownloaderImpl
 import com.minitel.toolboxlite.domain.repositories.IcsEventRepository
 import com.minitel.toolboxlite.domain.services.EmseAuthService
 import com.minitel.toolboxlite.domain.services.IcsDownloader
+import com.minitel.toolboxlite.domain.services.IcsEventScheduler
+import com.minitel.toolboxlite.presentation.services.IcsEventSchedulerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,13 +19,17 @@ import javax.inject.Singleton
 interface DomainModule {
     @Binds
     @Singleton
-    fun bindIcsEventRepository(repository: IcsEventRepositoryImpl): IcsEventRepository
+    fun bindIcsEventRepository(impl: IcsEventRepositoryImpl): IcsEventRepository
 
     @Binds
     @Singleton
-    fun bindEmseAuthService(service: EmseAuthServiceImpl): EmseAuthService
+    fun bindEmseAuthService(impl: EmseAuthServiceImpl): EmseAuthService
 
     @Binds
     @Singleton
-    fun bindIcsDownloader(service: IcsDownloaderImpl): IcsDownloader
+    fun bindIcsDownloader(impl: IcsDownloaderImpl): IcsDownloader
+
+    @Binds
+    @Singleton
+    fun bindIcsEventScheduler(impl: IcsEventSchedulerImpl): IcsEventScheduler
 }

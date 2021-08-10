@@ -8,4 +8,9 @@
     <string name="login">Login</string>
     <string name="event_time_format">%s - %s</string>
     <string name="calendar">Calendar</string>
+    <string name="channel_id">ics_event</string>
+    <string name="channel_description">Receive agenda notification</string>
+    <string name="channel_name">Agenda</string>
+    <string name="remember_me">Remember me</string>
+    <string name="agenda_empty">Your agenda is empty</string>
 </resources>

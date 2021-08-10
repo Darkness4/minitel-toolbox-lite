@@ -13,6 +13,7 @@ import io.ktor.utils.io.readUTF8Line
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
+import org.threeten.bp.LocalDateTime
 import javax.inject.Inject
 
 class IcsDownloaderImpl @Inject constructor(
@@ -38,8 +39,12 @@ class IcsDownloaderImpl @Inject constructor(
         }
 
         eventDao.clear()
-        calendar?.events?.let {
-            eventDao.insert(it.map { e -> IcsEventModel.fromEntity(e) })
+        calendar?.events?.let { list ->
+            val now = LocalDateTime.now()
+            eventDao.insert(
+                list.filter { !(it.dtstart < now && it.dtend < now) }
+                    .map { e -> IcsEventModel.fromEntity(e) }
+            )
         }
     }
 }

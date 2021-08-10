@@ -54,6 +54,13 @@ class EmseAuthServiceImpl @Inject constructor(
         }
     }
 
+    override suspend fun isSignedIn(): Boolean = try {
+        findIcs()
+        true
+    } catch (e: Exception) {
+        false
+    }
+
     @Throws(FormNotFound::class)
     private suspend fun fetchForm(service: String): FormParameters {
         val response =

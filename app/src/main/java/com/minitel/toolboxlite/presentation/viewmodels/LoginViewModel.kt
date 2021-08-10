@@ -3,28 +3,54 @@ package com.minitel.toolboxlite.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minitel.toolboxlite.core.state.State
+import com.minitel.toolboxlite.core.state.doOnSuccess
 import com.minitel.toolboxlite.core.state.tryOrCatch
 import com.minitel.toolboxlite.domain.services.EmseAuthService
+import com.minitel.toolboxlite.domain.services.IcsDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(private val emseAuthService: EmseAuthService) : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val emseAuthService: EmseAuthService,
+    private val icsDownloader: IcsDownloader,
+) : ViewModel() {
     val username = MutableStateFlow("")
     val password = MutableStateFlow("")
+    val rememberMe = MutableStateFlow(false)
 
     private val _login = MutableStateFlow<State<String>?>(null)
     val login: StateFlow<State<String>?>
         get() = _login
 
     fun doLogin() = viewModelScope.launch {
+        _login.value = State.Loading()
         _login.value = tryOrCatch { emseAuthService.loginForIcs(username.value, password.value) }
+        login.value?.doOnSuccess {
+            doDownload()
+        }
     }
 
     fun loginFinished() {
         _login.value = null
+    }
+
+    private val _download = MutableStateFlow<State<Unit>?>(null)
+    val download: StateFlow<State<Unit>?>
+        get() = _download
+
+    private fun doDownload() = viewModelScope.launch(Dispatchers.Default) {
+        _download.value = tryOrCatch {
+            val path = emseAuthService.findIcs()
+            icsDownloader.download(path)
+        }
+    }
+
+    fun downloadFinished() {
+        _download.value = null
     }
 }
