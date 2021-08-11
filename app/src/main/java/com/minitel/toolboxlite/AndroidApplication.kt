@@ -6,7 +6,6 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.squareup.leakcanary.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 
@@ -16,6 +15,7 @@ class AndroidApplication : Application() {
         super.onCreate()
 
         AndroidThreeTen.init(this)
+        createNotificationChannel()
 
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
