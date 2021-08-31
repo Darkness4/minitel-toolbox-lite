@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDateTime
+import timber.log.Timber
 import javax.inject.Inject
 
 class IcsDownloaderImpl @Inject constructor(
@@ -42,8 +43,8 @@ class IcsDownloaderImpl @Inject constructor(
         calendar?.events?.let { list ->
             val now = LocalDateTime.now()
             eventDao.insert(
-                list.filter { !(it.dtstart < now && it.dtend < now) }
-                    .map { e -> IcsEventModel.fromEntity(e) }
+                list.filter { it.dtstart > now || it.dtend > now }
+                    .map { e -> Timber.d("Fetched $e"); IcsEventModel.fromEntity(e) }
             )
         }
     }

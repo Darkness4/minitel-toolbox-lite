@@ -27,8 +27,7 @@ class PersistentCookiesStorage @Inject constructor(private val cookieDao: Cookie
         cookieDao.insert(CookieModel.fromKtor(cookie.fillDefaults(requestUrl)))
     }
 
-    override fun close() {
-    }
+    override fun close() = Unit
 
     override suspend fun get(requestUrl: Url): List<Cookie> {
         val date = GMTDate()

@@ -5,50 +5,58 @@
 
     <data>
 
+        <import type="org.threeten.bp.format.TextStyle" />
+
         <variable
             name="dayData"
             type="com.minitel.toolboxlite.presentation.adapters.DayListAdapter.DayData" />
+
+        <variable
+            name="dayOfWeekFormatted"
+            type="String" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="top|center"
+        android:orientation="horizontal"
         android:paddingLeft="8dp"
         android:paddingTop="8dp"
         android:paddingRight="8dp"
         android:paddingBottom="8dp">
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:gravity="top|center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_dayOfWeek"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{dayOfWeekFormatted}"
+                tools:text="SAT" />
+
+            <TextView
+                android:id="@+id/textView_dayOfMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{Integer.toString(dayData.dtstart.dayOfMonth)}"
+                tools:text="31" />
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_events"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_weight="95"
             android:orientation="vertical"
             app:events="@{dayData.events}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textView_dayOfWeek"
-            app:layout_constraintTop_toTopOf="parent"
             tools:itemCount="2"
             tools:listitem="@layout/item_event" />
-
-        <TextView
-            android:id="@+id/textView_dayOfWeek"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{dayData.dtstart.dayOfWeek.toString()}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="SAT" />
-
-        <TextView
-            android:id="@+id/textView_dayOfMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{Integer.toString(dayData.dtstart.dayOfMonth)}"
-            app:layout_constraintEnd_toEndOf="@+id/textView_dayOfWeek"
-            app:layout_constraintStart_toStartOf="@+id/textView_dayOfWeek"
-            app:layout_constraintTop_toBottomOf="@+id/textView_dayOfWeek"
-            tools:text="31" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </layout>

@@ -13,13 +13,13 @@ import io.ktor.client.request.parameter
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
 import io.ktor.http.Url
+import io.ktor.http.formUrlEncode
+import io.ktor.http.parametersOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 private data class FormParameters(
-    val lt: String,
-    val action: String,
     val execution: String,
 )
 
@@ -29,17 +29,18 @@ class EmseAuthServiceImpl @Inject constructor(
 ) : EmseAuthService {
     companion object {
         const val ICS_BASE_URL = "https://portail.emse.fr/ics/"
-        const val CAS_URL = "https://cas.emse.fr"
+        const val CAS_URL = "https://cas.emse.fr/"
     }
 
     /** Login CAS Emse Portal and store the cookie. */
     @Throws(FailedLogin::class)
     override suspend fun login(username: String, password: String, service: String): String {
         persistentCookiesStorage.clear(Url(ICS_BASE_URL))
+        persistentCookiesStorage.clear(Url(CAS_URL))
         val formParameters = fetchForm(service)
-        val response = postForm(username, password, formParameters)
+        val response = postForm(username, password, service, formParameters)
         val body = response.receive<String>()
-        if ("class=\"errors\"" in body || response.status.value in 400..599) {
+        if ("id=\"loginErrorsPanel\"" in body || response.status.value in 400..599) {
             throw FailedLogin
         }
 
@@ -75,14 +76,10 @@ class EmseAuthServiceImpl @Inject constructor(
         val body = response.receive<String>()
 
         try {
-            val lt = Regex("""name="lt" value="([^"]*)"""").find(body)?.groupValues?.get(1)!!
             val execution =
                 Regex("""name="execution" value="([^"]*)"""").find(body)?.groupValues?.get(1)!!
-            val action = Regex("""action="([^"]*)"""").find(body)?.groupValues?.get(1)!!
             return FormParameters(
-                lt = lt,
                 execution = execution,
-                action = action,
             )
         } catch (e: NullPointerException) {
             throw FormNotFound
@@ -92,14 +89,15 @@ class EmseAuthServiceImpl @Inject constructor(
     private suspend fun postForm(
         username: String,
         password: String,
+        service: String,
         formParameters: FormParameters
     ) = client.submitForm<HttpResponse>(
-        url = "$CAS_URL${formParameters.action}",
+        url = "$CAS_URL/login?" + parametersOf("service", service).formUrlEncode(),
         formParameters = Parameters.build {
             append("username", username)
             append("password", password)
-            append("lt", formParameters.lt)
             append("execution", formParameters.execution)
+            append("geolocation", "")
             append("_eventId", "submit")
         },
         encodeInQuery = true

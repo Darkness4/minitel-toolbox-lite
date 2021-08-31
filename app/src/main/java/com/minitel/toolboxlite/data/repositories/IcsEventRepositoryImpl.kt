@@ -13,7 +13,7 @@ class IcsEventRepositoryImpl @Inject constructor(private val icsEventDao: IcsEve
     override fun watchEventsAfterNow(): Flow<List<IcsEvent>> {
         val now = LocalDateTime.now()
         return icsEventDao.watch().map { list ->
-            list.filter { it.dtstart < now && it.dtend < now }
+            list.filter { it.dtstart > now || it.dtend > now }
                 .map { it.asEntity() }
         }
     }
