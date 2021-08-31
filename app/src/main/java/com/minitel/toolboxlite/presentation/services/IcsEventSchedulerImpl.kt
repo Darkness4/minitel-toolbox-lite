@@ -10,13 +10,16 @@ import com.minitel.toolboxlite.core.intent.CustomIntent
 import com.minitel.toolboxlite.domain.entities.calendar.IcsEvent
 import com.minitel.toolboxlite.domain.entities.notification.Notification
 import com.minitel.toolboxlite.domain.services.IcsEventScheduler
+import dagger.hilt.android.qualifiers.ApplicationContext
 import org.threeten.bp.ZoneOffset
 import timber.log.Timber
 import javax.inject.Inject
 
-class IcsEventSchedulerImpl @Inject constructor() : IcsEventScheduler {
+class IcsEventSchedulerImpl @Inject constructor(
+    @ApplicationContext private val context: Context
+) : IcsEventScheduler {
     @SuppressLint("UnspecifiedImmutableFlag")
-    override fun schedule(context: Context, icsEvent: IcsEvent, earlyMinutes: Int) {
+    override fun schedule(icsEvent: IcsEvent, earlyMinutes: Long) {
         Timber.d(
             "Schedule $icsEvent at ${
             icsEvent.dtstart.toInstant(ZoneOffset.UTC).toEpochMilli() - (earlyMinutes * 60000)
@@ -26,7 +29,7 @@ class IcsEventSchedulerImpl @Inject constructor() : IcsEventScheduler {
             context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
 
         val alarmIntent = Intent(context, IcsEventReceiver::class.java).let { intent ->
-            val notification = Notification.fromIcsEvent(icsEvent)
+            val notification = Notification.fromIcsEvent(context, icsEvent)
             intent.putExtra("notification", notification)
             intent.action = CustomIntent.INTENT_ACTION_ALARM
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

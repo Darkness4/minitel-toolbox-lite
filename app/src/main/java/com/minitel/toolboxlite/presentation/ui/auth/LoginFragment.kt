@@ -129,9 +129,13 @@ class LoginFragment : Fragment() {
     }
 
     override fun onStop() {
+        loginJob?.cancel()
         loginJob = null
+        downloadJob?.cancel()
         downloadJob = null
+        loginSettingsJob?.cancel()
         loginSettingsJob = null
+        icsReferenceJob?.cancel()
         icsReferenceJob = null
         super.onStop()
     }

@@ -146,6 +146,7 @@ dependencies {
 
     // JSON Serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Coroutines
     def coroutines = '1.5.1'

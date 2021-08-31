@@ -17,3 +17,7 @@ message IcsReference {
   string path = 1;
   string username = 2;
 }
+
+message CalendarSettings {
+  int64 early_minutes = 1;
+}

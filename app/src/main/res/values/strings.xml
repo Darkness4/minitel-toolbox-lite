@@ -20,4 +20,6 @@
     <string name="not_saved">Not Saved</string>
     <string name="signed_in">Signed In</string>
     <string name="signed_out">Signed out</string>
+    <string name="notification_title">Go to %1$s! (%2$s - %3$s)</string>
+    <string name="settings">Settings</string>
 </resources>

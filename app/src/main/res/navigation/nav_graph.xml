@@ -9,7 +9,7 @@
         android:id="@+id/loginFragment"
         android:name="com.minitel.toolboxlite.presentation.ui.auth.LoginFragment"
         android:label="LoginFragment"
-        tools:layout="@layout/fragment_login" >
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_calendarFragment2"
             app:destination="@id/calendarFragment" />
@@ -18,5 +18,14 @@
         android:id="@+id/calendarFragment"
         android:name="com.minitel.toolboxlite.presentation.ui.calendar.CalendarFragment"
         android:label="CalendarFragment"
-        tools:layout="@layout/fragment_calendar" />
+        tools:layout="@layout/fragment_calendar">
+        <action
+            android:id="@+id/action_calendarFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.minitel.toolboxlite.presentation.ui.settings.SettingsFragment"
+        android:label="SettingsFragment"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
