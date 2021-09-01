@@ -11,18 +11,22 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.minitel.toolboxlite.core.state.doOnFailure
 import com.minitel.toolboxlite.core.state.fold
-import com.minitel.toolboxlite.data.datastore.IcsReference
+import com.minitel.toolboxlite.data.datastore.calendarSettingsDataStore
 import com.minitel.toolboxlite.data.datastore.icsReferenceDataStore
 import com.minitel.toolboxlite.data.datastore.loginSettingsDataStore
 import com.minitel.toolboxlite.data.datastore.update
 import com.minitel.toolboxlite.databinding.FragmentLoginBinding
 import com.minitel.toolboxlite.domain.services.EmseAuthService
+import com.minitel.toolboxlite.domain.services.IcsEventScheduler
 import com.minitel.toolboxlite.presentation.viewmodels.LoginViewModel
 import com.minitel.toolboxlite.presentation.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -34,6 +38,9 @@ class LoginFragment : Fragment() {
     @Inject
     lateinit var emseAuthService: EmseAuthService
 
+    @Inject
+    lateinit var icsEventScheduler: IcsEventScheduler
+
     private var _binding: FragmentLoginBinding? = null
     private val binding: FragmentLoginBinding
         get() = _binding!!
@@ -42,6 +49,7 @@ class LoginFragment : Fragment() {
     private var downloadJob: Job? = null
     private var loginSettingsJob: Job? = null
     private var icsReferenceJob: Job? = null
+    private var icsEventsJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +60,7 @@ class LoginFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
-        loginSettingsJob = lifecycleScope.launch {
+        loginSettingsJob = lifecycleScope.launch(Dispatchers.Default) {
             requireContext().loginSettingsDataStore.data.collect {
                 viewModel.rememberMe.value = it.rememberMe
                 if (it.rememberMe) {
@@ -79,12 +87,9 @@ class LoginFragment : Fragment() {
                             viewModel.password.value
                         )
                         val path = emseAuthService.findIcs()
-                        requireContext().icsReferenceDataStore.updateData {
-                            IcsReference.newBuilder()
-                                .setUsername(viewModel.username.value)
-                                .setPath(path)
-                                .build()
-                        }
+                        requireContext().icsReferenceDataStore.update(
+                            viewModel.username.value, path
+                        )
                     },
                     onFailure = { e ->
                         Toast.makeText(
@@ -116,13 +121,31 @@ class LoginFragment : Fragment() {
             }
         }
 
-        icsReferenceJob = lifecycleScope.launch {
+        icsReferenceJob = lifecycleScope.launch(Dispatchers.Default) {
             requireContext().icsReferenceDataStore.data.collect {
                 if (it.path.isNotBlank()) {
                     activityViewModel.showBottomBar.value = true
                     viewModel.isIcsSaved.value = true
                     viewModel.icsUrl.value = it.path
                     viewModel.doDownload(it.path)
+                }
+            }
+        }
+
+        icsEventsJob = lifecycleScope.launch {
+            viewModel.events.collect { list ->
+                if (list.isNotEmpty()) {
+                    withContext(Dispatchers.Default) {
+                        val earlyMinutes =
+                            requireContext().calendarSettingsDataStore.data.firstOrNull()?.earlyMinutes
+                                ?: 5L
+                        list.forEach { icsEventScheduler.schedule(it, earlyMinutes) }
+                    }
+                    Toast.makeText(
+                        context,
+                        "Scheduled ${list.size} events.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
@@ -137,6 +160,8 @@ class LoginFragment : Fragment() {
         loginSettingsJob = null
         icsReferenceJob?.cancel()
         icsReferenceJob = null
+        icsEventsJob?.cancel()
+        icsEventsJob = null
         super.onStop()
     }
 

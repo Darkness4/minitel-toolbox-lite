@@ -2,13 +2,14 @@ package com.minitel.toolboxlite.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.minitel.toolboxlite.domain.entities.calendar.IcsEvent
 import com.minitel.toolboxlite.domain.repositories.IcsEventRepository
 import com.minitel.toolboxlite.presentation.adapters.MonthListAdapter
 import com.minitel.toolboxlite.presentation.utils.toMonthDataList
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -17,9 +18,9 @@ import javax.inject.Inject
 class CalendarViewModel @Inject constructor(
     icsEventRepository: IcsEventRepository,
 ) : ViewModel() {
-    val events: StateFlow<List<IcsEvent>> = icsEventRepository.watchEventsAfterNow()
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
-    val months: StateFlow<List<MonthListAdapter.MonthData>> = events.map { it.toMonthDataList() }
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+    val months: StateFlow<List<MonthListAdapter.MonthData>> =
+        icsEventRepository.watchEventsAfterNow()
+            .map { it.toMonthDataList() }
+            .flowOn(Dispatchers.Default)
+            .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }

@@ -21,7 +21,9 @@ class IcsDownloaderImpl @Inject constructor(
     private val client: HttpClient,
     private val eventDao: IcsEventDao
 ) : IcsDownloader {
-    override suspend fun download(path: String) {
+    override suspend fun download(path: String): Unit = withContext(
+        Dispatchers.IO
+    ) {
         var calendar: IcsCalendar? = null
         client.get<HttpStatement>(path).execute { response ->
             val channel: ByteReadChannel = response.receive()

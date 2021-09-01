@@ -11,6 +11,7 @@ import com.minitel.toolboxlite.data.datastore.calendarSettingsDataStore
 import com.minitel.toolboxlite.data.datastore.update
 import com.minitel.toolboxlite.databinding.FragmentSettingsBinding
 import com.minitel.toolboxlite.presentation.viewmodels.SettingsViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -38,7 +39,7 @@ class SettingsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        earlyMinutesJob = lifecycleScope.launch {
+        earlyMinutesJob = lifecycleScope.launch(Dispatchers.Default) {
             viewModel.earlyMinutes.collect { value ->
                 requireContext().calendarSettingsDataStore.update(value)
             }

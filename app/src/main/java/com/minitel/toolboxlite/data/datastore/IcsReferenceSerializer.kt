@@ -36,3 +36,13 @@ val Context.icsReferenceDataStore: DataStore<IcsReference> by dataStore(
     fileName = "icsreference.pb",
     serializer = IcsReferenceSerializer
 )
+
+suspend fun DataStore<IcsReference>.update(username: String, path: String) {
+    updateData { IcsReference.getDefaultInstance() }
+    updateData {
+        IcsReference.newBuilder()
+            .setUsername(username)
+            .setPath(path)
+            .build()
+    }
+}

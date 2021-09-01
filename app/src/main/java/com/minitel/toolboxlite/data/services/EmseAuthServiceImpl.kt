@@ -15,8 +15,10 @@ import io.ktor.http.Parameters
 import io.ktor.http.Url
 import io.ktor.http.formUrlEncode
 import io.ktor.http.parametersOf
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private data class FormParameters(
@@ -34,28 +36,35 @@ class EmseAuthServiceImpl @Inject constructor(
 
     /** Login CAS Emse Portal and store the cookie. */
     @Throws(FailedLogin::class)
-    override suspend fun login(username: String, password: String, service: String): String {
-        persistentCookiesStorage.clear(Url(ICS_BASE_URL))
-        persistentCookiesStorage.clear(Url(CAS_URL))
-        val formParameters = fetchForm(service)
-        val response = postForm(username, password, service, formParameters)
-        val body = response.receive<String>()
-        if ("id=\"loginErrorsPanel\"" in body || response.status.value in 400..599) {
-            throw FailedLogin
+    override suspend fun login(username: String, password: String, service: String): String =
+        withContext(
+            Dispatchers.IO
+        ) {
+            persistentCookiesStorage.clear(Url(ICS_BASE_URL))
+            persistentCookiesStorage.clear(Url(CAS_URL))
+            val formParameters = fetchForm(service)
+            val response = postForm(username, password, service, formParameters)
+            val body = response.receive<String>()
+            if ("id=\"loginErrorsPanel\"" in body || response.status.value in 400..599) {
+                throw FailedLogin
+            }
+
+            return@withContext body
         }
 
-        return body
-    }
-
     @Throws(FormNotFound::class)
-    override suspend fun loginForIcs(username: String, password: String): String {
-        return login(username, password, ICS_BASE_URL)
+    override suspend fun loginForIcs(username: String, password: String): String = withContext(
+        Dispatchers.IO
+    ) {
+        return@withContext login(username, password, ICS_BASE_URL)
     }
 
     @Throws(CannotFetchIcs::class)
-    override suspend fun findIcs(): String {
+    override suspend fun findIcs(): String = withContext(
+        Dispatchers.IO
+    ) {
         val body = client.get<String>(ICS_BASE_URL)
-        return try {
+        return@withContext try {
             Regex("""https(.*)\.ics""").find(body)?.value!!
         } catch (e: RuntimeException) {
             throw CannotFetchIcs
@@ -68,7 +77,9 @@ class EmseAuthServiceImpl @Inject constructor(
         }
 
     @Throws(FormNotFound::class)
-    private suspend fun fetchForm(service: String): FormParameters {
+    private suspend fun fetchForm(service: String): FormParameters = withContext(
+        Dispatchers.IO
+    ) {
         val response =
             client.get<HttpResponse>("$CAS_URL/login") {
                 parameter("service", service)
@@ -78,7 +89,7 @@ class EmseAuthServiceImpl @Inject constructor(
         try {
             val execution =
                 Regex("""name="execution" value="([^"]*)"""").find(body)?.groupValues?.get(1)!!
-            return FormParameters(
+            return@withContext FormParameters(
                 execution = execution,
             )
         } catch (e: NullPointerException) {
@@ -91,15 +102,19 @@ class EmseAuthServiceImpl @Inject constructor(
         password: String,
         service: String,
         formParameters: FormParameters
-    ) = client.submitForm<HttpResponse>(
-        url = "$CAS_URL/login?" + parametersOf("service", service).formUrlEncode(),
-        formParameters = Parameters.build {
-            append("username", username)
-            append("password", password)
-            append("execution", formParameters.execution)
-            append("geolocation", "")
-            append("_eventId", "submit")
-        },
-        encodeInQuery = true
-    )
+    ) = withContext(
+        Dispatchers.IO
+    ) {
+        return@withContext client.submitForm<HttpResponse>(
+            url = "$CAS_URL/login?" + parametersOf("service", service).formUrlEncode(),
+            formParameters = Parameters.build {
+                append("username", username)
+                append("password", password)
+                append("execution", formParameters.execution)
+                append("geolocation", "")
+                append("_eventId", "submit")
+            },
+            encodeInQuery = true
+        )
+    }
 }

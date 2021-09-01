@@ -4,10 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.minitel.toolboxlite.core.state.State
 import com.minitel.toolboxlite.core.state.tryOrCatch
+import com.minitel.toolboxlite.domain.entities.calendar.IcsEvent
+import com.minitel.toolboxlite.domain.repositories.IcsEventRepository
 import com.minitel.toolboxlite.domain.services.EmseAuthService
 import com.minitel.toolboxlite.domain.services.IcsDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val emseAuthService: EmseAuthService,
     private val icsDownloader: IcsDownloader,
+    icsEventRepository: IcsEventRepository,
 ) : ViewModel() {
     val username = MutableStateFlow("")
     val password = MutableStateFlow("")
@@ -42,11 +44,15 @@ class LoginViewModel @Inject constructor(
         _login.value = null
     }
 
+    val events: StateFlow<List<IcsEvent>> =
+        icsEventRepository.watchEventsAfterNow()
+            .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+
     private val _download = MutableStateFlow<State<Unit>?>(null)
     val download: StateFlow<State<Unit>?>
         get() = _download
 
-    fun doDownload(path: String) = viewModelScope.launch(Dispatchers.Default) {
+    fun doDownload(path: String) = viewModelScope.launch {
         _download.value = tryOrCatch {
             icsDownloader.download(path)
         }
