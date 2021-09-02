@@ -3,7 +3,10 @@ package com.minitel.toolboxlite.presentation.utils
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.databinding.InverseBindingAdapter
+import androidx.databinding.InverseBindingListener
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.slider.Slider
 import com.minitel.toolboxlite.R
 import com.minitel.toolboxlite.domain.entities.calendar.IcsEvent
 import com.minitel.toolboxlite.presentation.adapters.DayListAdapter
@@ -68,3 +71,17 @@ fun bindEventList(
         adapter.submitList(events.sortedWith(compareBy({ it.dtstart }, { it.dtend })))
     }
 }
+
+@BindingAdapter("android:valueAttrChanged")
+fun bindEventList(
+    view: Slider,
+    attrChange: InverseBindingListener
+) {
+    view.addOnChangeListener { _, _, _ ->
+        attrChange.onChange()
+    }
+}
+
+@InverseBindingAdapter(attribute = "android:value")
+fun getTime(view: Slider): Float = view.value
+

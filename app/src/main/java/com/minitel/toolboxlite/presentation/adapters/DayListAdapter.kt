@@ -1,8 +1,8 @@
 package com.minitel.toolboxlite.presentation.adapters
 
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.os.ConfigurationCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -32,12 +32,7 @@ class DayListAdapter : ListAdapter<DayListAdapter.DayData, DayListAdapter.ViewHo
         RecyclerView.ViewHolder(binding.root) {
         fun bind(dayData: DayData) {
             binding.dayData = dayData
-            val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                itemView.resources.configuration.locales.get(0)
-            } else {
-                /** @noinspection deprecation */
-                itemView.resources.configuration.locale
-            }
+            val locale = ConfigurationCompat.getLocales(itemView.resources.configuration)[0]
             binding.dayOfWeekFormatted =
                 dayData.dtstart.dayOfWeek.getDisplayName(TextStyle.SHORT, locale)
             binding.executePendingBindings()

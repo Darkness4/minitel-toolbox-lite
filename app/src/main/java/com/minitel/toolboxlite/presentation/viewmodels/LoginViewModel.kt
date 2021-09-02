@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.minitel.toolboxlite.core.state.State
 import com.minitel.toolboxlite.core.state.tryOrCatch
 import com.minitel.toolboxlite.domain.entities.calendar.IcsEvent
+import com.minitel.toolboxlite.domain.repositories.CalendarSettingsRepository
 import com.minitel.toolboxlite.domain.repositories.IcsEventRepository
 import com.minitel.toolboxlite.domain.repositories.IcsReferenceRepository
 import com.minitel.toolboxlite.domain.repositories.LoginSettingsRepository
@@ -26,6 +27,7 @@ class LoginViewModel @Inject constructor(
     private val icsDownloader: IcsDownloader,
     private val loginSettingsRepository: LoginSettingsRepository,
     private val icsReferenceRepository: IcsReferenceRepository,
+    calendarSettingsRepository: CalendarSettingsRepository,
     icsEventRepository: IcsEventRepository,
 ) : ViewModel() {
     val username = MutableStateFlow("")
@@ -36,6 +38,10 @@ class LoginViewModel @Inject constructor(
         emseAuthService.isSignedIn().stateIn(viewModelScope, SharingStarted.Lazily, false)
     val isIcsSaved = MutableStateFlow(false)
     val icsUrl = MutableStateFlow("Not found")
+
+    val calendarSettings = calendarSettingsRepository
+        .watch()
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     init {
         viewModelScope.launch(Dispatchers.Default) {
@@ -93,7 +99,7 @@ class LoginViewModel @Inject constructor(
     val download: StateFlow<State<Unit>?>
         get() = _download
 
-    fun doDownload(path: String) = viewModelScope.launch {
+    private fun doDownload(path: String) = viewModelScope.launch {
         _download.value = tryOrCatch {
             icsDownloader.download(path)
         }

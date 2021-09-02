@@ -1,14 +1,20 @@
 package com.minitel.toolboxlite.presentation.ui.settings
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import com.minitel.toolboxlite.databinding.FragmentSettingsBinding
 import com.minitel.toolboxlite.presentation.viewmodels.SettingsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SettingsFragment : Fragment() {
@@ -18,6 +24,8 @@ class SettingsFragment : Fragment() {
     private val binding: FragmentSettingsBinding
         get() = _binding!!
 
+    private var openLicencesJob: Job? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -26,7 +34,26 @@ class SettingsFragment : Fragment() {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
+
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        openLicencesJob = lifecycleScope.launch {
+            viewModel.openLicences.collect {
+                it?.let {
+                    startActivity(Intent(context, OssLicensesMenuActivity::class.java))
+                    viewModel.openLicencesDone()
+                }
+            }
+        }
+    }
+
+    override fun onStop() {
+        openLicencesJob?.cancel()
+        openLicencesJob = null
+        super.onStop()
     }
 
     override fun onDestroyView() {

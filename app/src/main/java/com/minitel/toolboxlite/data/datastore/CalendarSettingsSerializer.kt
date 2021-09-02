@@ -13,7 +13,10 @@ import java.io.OutputStream
 
 @Suppress("BlockingMethodInNonBlockingContext")
 object CalendarSettingsSerializer : Serializer<CalendarSettings> {
-    override val defaultValue: CalendarSettings = CalendarSettings.getDefaultInstance()
+    override val defaultValue: CalendarSettings =
+        CalendarSettings.newBuilder()
+            .setEarlyMinutes(5L)
+            .build()
 
     override suspend fun readFrom(input: InputStream): CalendarSettings {
         return try {

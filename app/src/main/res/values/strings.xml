@@ -25,4 +25,9 @@
     <string name="notify_me_of_events_before_x_minutes">Notify me of events before</string>
     <string name="early_settings_icon_content_description">Notify before icon</string>
     <string name="early_minutes_settings_slider_content_description">Slider to define when the notification appears</string>
+    <string name="licences_settings_content_description">Licences icon</string>
+    <string name="licences">Licences</string>
+    <string name="mit_licence">MIT Licence</string>
+    <string name="about">About</string>
+    <string name="about_icon_content_description">About icon</string>
 </resources>

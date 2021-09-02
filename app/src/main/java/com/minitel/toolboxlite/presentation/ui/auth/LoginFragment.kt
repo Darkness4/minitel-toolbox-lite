@@ -10,7 +10,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.minitel.toolboxlite.core.state.doOnFailure
 import com.minitel.toolboxlite.core.state.fold
-import com.minitel.toolboxlite.data.datastore.calendarSettingsDataStore
 import com.minitel.toolboxlite.databinding.FragmentLoginBinding
 import com.minitel.toolboxlite.domain.services.IcsEventScheduler
 import com.minitel.toolboxlite.presentation.viewmodels.LoginViewModel
@@ -18,7 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -94,13 +92,17 @@ class LoginFragment : Fragment() {
 
         icsEventsJob = lifecycleScope.launch {
             viewModel.events.collect { list ->
-                if (list.isNotEmpty()) {
+                val calendarSettings = viewModel.calendarSettings.value
+                if (list.isNotEmpty() && calendarSettings != null) {
                     withContext(Dispatchers.Default) {
-                        val earlyMinutes =
-                            requireContext().calendarSettingsDataStore.data.firstOrNull()?.earlyMinutes
-                                ?: 5L
-                        list.forEach { icsEventScheduler.schedule(it, earlyMinutes) }
+                        list.forEach {
+                            icsEventScheduler.schedule(
+                                it,
+                                calendarSettings.earlyMinutes
+                            )
+                        }
                     }
+                    Timber.d("Scheduled ${list.size} events.")
                     Toast.makeText(
                         context,
                         "Scheduled ${list.size} events.",

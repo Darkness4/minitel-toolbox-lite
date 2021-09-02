@@ -1,6 +1,5 @@
 package com.minitel.toolboxlite.presentation.services
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
@@ -12,19 +11,12 @@ import com.minitel.toolboxlite.domain.entities.notification.Notification
 import com.minitel.toolboxlite.domain.services.IcsEventScheduler
 import dagger.hilt.android.qualifiers.ApplicationContext
 import org.threeten.bp.ZoneOffset
-import timber.log.Timber
 import javax.inject.Inject
 
 class IcsEventSchedulerImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : IcsEventScheduler {
-    @SuppressLint("UnspecifiedImmutableFlag")
     override fun schedule(icsEvent: IcsEvent, earlyMinutes: Long) {
-        Timber.d(
-            "Schedule $icsEvent at ${
-            icsEvent.dtstart.toInstant(ZoneOffset.UTC).toEpochMilli() - (earlyMinutes * 60000)
-            }"
-        )
         val alarmManager =
             context.getSystemService(Context.ALARM_SERVICE) as? AlarmManager
 
@@ -40,6 +32,7 @@ class IcsEventSchedulerImpl @Inject constructor(
                     PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                 )
             } else {
+                // noinspection UnspecifiedImmutableFlag
                 PendingIntent.getBroadcast(
                     context,
                     notification.id,

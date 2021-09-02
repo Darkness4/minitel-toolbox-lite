@@ -15,8 +15,8 @@ class LoginSettingsRepositoryImpl @Inject constructor(
         username: String,
         password: String
     ) {
-        if (rememberMe) {
-            dataStore.updateData {
+        dataStore.updateData {
+            if (rememberMe) {
                 LoginSettings.newBuilder()
                     .setRememberMe(true)
                     .setCredentials(
@@ -25,9 +25,7 @@ class LoginSettingsRepositoryImpl @Inject constructor(
                             .setPassword(password)
                     )
                     .build()
-            }
-        } else {
-            dataStore.updateData {
+            } else {
                 LoginSettings.newBuilder()
                     .setRememberMe(false)
                     .build()
