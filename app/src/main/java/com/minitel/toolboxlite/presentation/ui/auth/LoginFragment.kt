@@ -91,23 +91,26 @@ class LoginFragment : Fragment() {
         }
 
         icsEventsJob = lifecycleScope.launch {
-            viewModel.events.collect { list ->
-                val calendarSettings = viewModel.calendarSettings.value
-                if (list.isNotEmpty() && calendarSettings != null) {
-                    withContext(Dispatchers.Default) {
-                        list.forEach {
-                            icsEventScheduler.schedule(
-                                it,
-                                calendarSettings.earlyMinutes
-                            )
+            viewModel.calendarSettings.collect { calendarSettings ->
+                calendarSettings?.let {
+                    viewModel.events.collect { list ->
+                        if (list.isNotEmpty()) {
+                            withContext(Dispatchers.Default) {
+                                list.forEach {
+                                    icsEventScheduler.schedule(
+                                        it,
+                                        calendarSettings.earlyMinutes
+                                    )
+                                }
+                            }
+                            Timber.d("Scheduled ${list.size} events.")
+                            Toast.makeText(
+                                context,
+                                "Scheduled ${list.size} events.",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
-                    Timber.d("Scheduled ${list.size} events.")
-                    Toast.makeText(
-                        context,
-                        "Scheduled ${list.size} events.",
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             }
         }

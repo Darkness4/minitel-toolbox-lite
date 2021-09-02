@@ -84,4 +84,3 @@ fun bindEventList(
 
 @InverseBindingAdapter(attribute = "android:value")
 fun getTime(view: Slider): Float = view.value
-

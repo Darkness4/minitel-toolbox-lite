@@ -42,10 +42,20 @@ class IcsEventSchedulerImpl @Inject constructor(
             }
         }
 
-        alarmManager?.set(
-            AlarmManager.RTC_WAKEUP,
-            icsEvent.dtstart.toInstant(ZoneOffset.UTC).toEpochMilli() - (earlyMinutes * 60000),
-            alarmIntent
-        )
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager?.setExactAndAllowWhileIdle(
+                AlarmManager.RTC_WAKEUP,
+                icsEvent.dtstart.toInstant(
+                    ZoneOffset.UTC
+                ).toEpochMilli() - (earlyMinutes * 60000),
+                alarmIntent
+            )
+        } else {
+            alarmManager?.setExact(
+                AlarmManager.RTC_WAKEUP,
+                icsEvent.dtstart.toInstant(ZoneOffset.UTC).toEpochMilli() - (earlyMinutes * 60000),
+                alarmIntent
+            )
+        }
     }
 }
