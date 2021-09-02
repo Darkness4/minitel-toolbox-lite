@@ -22,4 +22,7 @@
     <string name="signed_out">Signed out</string>
     <string name="notification_title">Go to %1$s! (%2$s - %3$s)</string>
     <string name="settings">Settings</string>
+    <string name="notify_me_of_events_before_x_minutes">Notify me of events before</string>
+    <string name="early_settings_icon_content_description">Notify before icon</string>
+    <string name="early_minutes_settings_slider_content_description">Slider to define when the notification appears</string>
 </resources>

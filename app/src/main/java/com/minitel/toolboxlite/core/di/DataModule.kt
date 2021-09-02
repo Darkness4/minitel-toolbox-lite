@@ -1,6 +1,7 @@
 package com.minitel.toolboxlite.core.di
 
 import android.content.Context
+import androidx.datastore.core.DataStore
 import androidx.room.Room
 import com.minitel.toolboxlite.BuildConfig
 import com.minitel.toolboxlite.data.database.CookieDao
@@ -8,6 +9,12 @@ import com.minitel.toolboxlite.data.database.Database
 import com.minitel.toolboxlite.data.database.IcsEventDao
 import com.minitel.toolboxlite.data.database.converters.LocalDateTimeConverters
 import com.minitel.toolboxlite.data.database.converters.MapConverters
+import com.minitel.toolboxlite.data.datastore.CalendarSettings
+import com.minitel.toolboxlite.data.datastore.IcsReference
+import com.minitel.toolboxlite.data.datastore.LoginSettings
+import com.minitel.toolboxlite.data.datastore.calendarSettingsDataStore
+import com.minitel.toolboxlite.data.datastore.icsReferenceDataStore
+import com.minitel.toolboxlite.data.datastore.loginSettingsDataStore
 import com.minitel.toolboxlite.data.ktor.PersistentCookiesStorage
 import dagger.Module
 import dagger.Provides
@@ -84,4 +91,16 @@ object DataModule {
     fun provideCookieDao(database: Database): CookieDao {
         return database.cookieDao()
     }
+
+    @Singleton
+    @Provides
+    fun provideCalendarSettingsDataStore(@ApplicationContext context: Context): DataStore<CalendarSettings> = context.calendarSettingsDataStore
+
+    @Singleton
+    @Provides
+    fun provideIcsReferenceDataStore(@ApplicationContext context: Context): DataStore<IcsReference> = context.icsReferenceDataStore
+
+    @Singleton
+    @Provides
+    fun provideLoginSettingsDataStore(@ApplicationContext context: Context): DataStore<LoginSettings> = context.loginSettingsDataStore
 }

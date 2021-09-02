@@ -36,13 +36,3 @@ val Context.calendarSettingsDataStore: DataStore<CalendarSettings> by dataStore(
     fileName = "calendarsettings.pb",
     serializer = CalendarSettingsSerializer
 )
-
-suspend fun DataStore<CalendarSettings>.update(
-    earlyMinutes: Long = 5,
-) {
-    this.updateData {
-        CalendarSettings.newBuilder()
-            .setEarlyMinutes(earlyMinutes)
-            .build()
-    }
-}

@@ -66,9 +66,9 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += [
-                        "room.schemaLocation"                         : "$projectDir/schemas".toString(),
-                        "room.incremental"                            : "true",
-                        "room.expandProjection"                       : "true"]
+                        "room.schemaLocation"  : "$projectDir/schemas".toString(),
+                        "room.incremental"     : "true",
+                        "room.expandProjection": "true"]
             }
         }
     }
@@ -146,7 +146,6 @@ dependencies {
 
     // JSON Serialization
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Coroutines
     def coroutines = '1.5.1'
@@ -169,7 +168,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     // DataStore
-    implementation "androidx.datastore:datastore:1.0.0"
+    implementation 'androidx.datastore:datastore:1.0.0'
     implementation 'com.google.protobuf:protobuf-javalite:3.17.3'
 
     // Http

@@ -6,12 +6,16 @@ import com.minitel.toolboxlite.core.state.State
 import com.minitel.toolboxlite.core.state.tryOrCatch
 import com.minitel.toolboxlite.domain.entities.calendar.IcsEvent
 import com.minitel.toolboxlite.domain.repositories.IcsEventRepository
+import com.minitel.toolboxlite.domain.repositories.IcsReferenceRepository
+import com.minitel.toolboxlite.domain.repositories.LoginSettingsRepository
 import com.minitel.toolboxlite.domain.services.EmseAuthService
 import com.minitel.toolboxlite.domain.services.IcsDownloader
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +24,8 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val emseAuthService: EmseAuthService,
     private val icsDownloader: IcsDownloader,
+    private val loginSettingsRepository: LoginSettingsRepository,
+    private val icsReferenceRepository: IcsReferenceRepository,
     icsEventRepository: IcsEventRepository,
 ) : ViewModel() {
     val username = MutableStateFlow("")
@@ -30,6 +36,41 @@ class LoginViewModel @Inject constructor(
         emseAuthService.isSignedIn().stateIn(viewModelScope, SharingStarted.Lazily, false)
     val isIcsSaved = MutableStateFlow(false)
     val icsUrl = MutableStateFlow("Not found")
+
+    init {
+        viewModelScope.launch(Dispatchers.Default) {
+            icsReferenceRepository.watch().collect {
+                if (it.path.isNotBlank()) {
+                    isIcsSaved.value = true
+                    icsUrl.value = it.path
+                    doDownload(it.path)
+                }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.Default) {
+            loginSettingsRepository.watch().collect {
+                rememberMe.value = it.rememberMe
+                if (it.rememberMe) {
+                    username.value = it.credentials.username
+                    password.value = it.credentials.password
+                }
+            }
+        }
+    }
+
+    fun updateLoginSettings() = viewModelScope.launch(Dispatchers.Default) {
+        loginSettingsRepository.update(
+            rememberMe.value,
+            username.value,
+            password.value
+        )
+    }
+
+    fun updateIcsReference() = viewModelScope.launch(Dispatchers.Default) {
+        val path = emseAuthService.findIcs()
+        icsReferenceRepository.update(username.value, path)
+    }
 
     private val _login = MutableStateFlow<State<String>?>(null)
     val login: StateFlow<State<String>?>

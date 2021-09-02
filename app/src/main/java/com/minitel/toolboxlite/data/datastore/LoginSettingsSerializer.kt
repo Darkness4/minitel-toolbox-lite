@@ -36,28 +36,3 @@ val Context.loginSettingsDataStore: DataStore<LoginSettings> by dataStore(
     fileName = "loginsettings.pb",
     serializer = LoginSettingsSerializer
 )
-
-suspend fun DataStore<LoginSettings>.update(
-    rememberMe: Boolean,
-    username: String = "",
-    password: String = ""
-) {
-    if (rememberMe) {
-        this.updateData {
-            LoginSettings.newBuilder()
-                .setRememberMe(true)
-                .setCredentials(
-                    Credentials.newBuilder()
-                        .setUsername(username)
-                        .setPassword(password)
-                )
-                .build()
-        }
-    } else {
-        this.updateData {
-            LoginSettings.newBuilder()
-                .setRememberMe(false)
-                .build()
-        }
-    }
-}
