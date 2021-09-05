@@ -22,7 +22,7 @@ class IcsEventReceiver : BroadcastReceiver() {
                     NotificationCompat.Builder(context, context.getString(R.string.channel_id))
                         .setContentTitle(payload.title)
                         .setContentText(payload.description)
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setSmallIcon(R.mipmap.ic_launcher_foreground)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setVibrate(longArrayOf(1000L))
                         .setSound(alarmSound)
