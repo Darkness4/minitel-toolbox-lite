@@ -181,12 +181,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: app-aab
+      - name: Get the tag name
+        run: echo "TAG=$(git tag --sort=creatordate | tail -2 | head -1)" >> $GITHUB_ENV
       - name: Build Changelog
         id: github_release
         uses: heinrichreimer/github-changelog-generator-action@v2.2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          onlyLastTag: "true"
+          sinceTag: ${{ env.TAG }}
           issues: true
           issuesWoLabels: true
           pullRequests: true
