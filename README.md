@@ -2,7 +2,7 @@
 
 ## Screenshots
 
-<img src="assets/Screenshot_20210905-193839.png" alt="img" style="zoom:25%;" /><img src="assets/Screenshot_20210905-193812.png" alt="img" style="zoom:25%;" />
+<img src="assets/Screenshot_20210905-193839.png" alt="img" width="25%" height="25%" /><img src="assets/Screenshot_20210905-193812.png" alt="img" width="25%" height="25%" />
 
 # LICENSE
 
