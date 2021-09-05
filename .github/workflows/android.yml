@@ -169,7 +169,6 @@ jobs:
       - package-apk-android
       - package-aab-android
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - uses: actions/checkout@v2
         with:
@@ -182,20 +181,29 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: app-aab
-      - name: Get the tag name
-        run: echo "TAG=$(git tag --sort=creatordate | tail -2 | head -1)" >> $GITHUB_ENV
       - name: Build Changelog
         id: github_release
         uses: heinrichreimer/github-changelog-generator-action@v2.2
         with:
-          repo: Darkness4/minitel-toolbox-lite
-          user: Darkness4
-          project: minitel-toolbox-lite
           token: ${{ secrets.GITHUB_TOKEN }}
-          sinceTag: ${{ env.TAG }}
-
+          onlyLastTag: "true"
+          issues: true
+          issuesWoLabels: true
+          pullRequests: true
+          prWoLabels: true
+          filterByMilestone: true
+          author: true
+          unreleased: true
+          compareLink: true
+          httpCache: true
+          verbose: true
+      - name: Echo changelog
+        env:
+          CHANGELOG: ${{ steps.github_release.outputs.changelog }}
+        run: echo "$CHANGELOG"
       - name: Release
         uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             app-release.apk
