@@ -37,7 +37,7 @@ class IcsDownloaderImpl @Inject constructor(
             }
 
             withContext(Dispatchers.Default) {
-                calendar = IcsCalendar.Builder().fromLineFlow(flow).build()
+                calendar = IcsCalendar.fromLineFlow(flow)
             }
         }
 

@@ -27,18 +27,8 @@ data class IcsCalendar(
 
     companion object {
         inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
-    }
 
-    class Builder {
-        var version: String = ""
-        var prodId: String = ""
-        var calscale: String = ""
-        val timezone = IcsTimezone.Builder()
-        val events: MutableList<IcsEvent> = mutableListOf()
-
-        fun build() = IcsCalendar(this)
-
-        suspend fun fromLineFlow(lines: Flow<String>) = apply {
+        suspend fun fromLineFlow(lines: Flow<String>) = build {
             var mode: ICalSection = ICalSection.None
 
             var icsEventBuilder: IcsEvent.Builder? = null
@@ -93,6 +83,16 @@ data class IcsCalendar(
                 }
             }
         }
+    }
+
+    class Builder {
+        var version: String = ""
+        var prodId: String = ""
+        var calscale: String = ""
+        val timezone = IcsTimezone.Builder()
+        val events: MutableList<IcsEvent> = mutableListOf()
+
+        fun build() = IcsCalendar(this)
 
         operator fun set(key: String, value: String) {
             when (key) {
