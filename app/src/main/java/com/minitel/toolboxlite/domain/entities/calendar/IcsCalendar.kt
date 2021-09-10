@@ -17,6 +17,18 @@ data class IcsCalendar(
     val timezone: IcsTimezone,
     val events: List<IcsEvent>
 ) : Parcelable {
+    private constructor(builder: Builder) : this(
+        version = builder.version,
+        prodId = builder.prodId,
+        calscale = builder.calscale,
+        timezone = builder.timezone.build(),
+        events = builder.events
+    )
+
+    companion object {
+        inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
+    }
+
     class Builder {
         var version: String = ""
         var prodId: String = ""
@@ -24,13 +36,7 @@ data class IcsCalendar(
         val timezone = IcsTimezone.Builder()
         val events: MutableList<IcsEvent> = mutableListOf()
 
-        fun build() = IcsCalendar(
-            version = version,
-            prodId = prodId,
-            calscale = calscale,
-            timezone = timezone.build(),
-            events = events
-        )
+        fun build() = IcsCalendar(this)
 
         suspend fun fromLineFlow(lines: Flow<String>) = apply {
             var mode: ICalSection = ICalSection.None
@@ -50,7 +56,8 @@ data class IcsCalendar(
                             }
                             try {
                                 mode = ICalSection.valueOf(value)
-                            } catch (e: IllegalArgumentException) {}
+                            } catch (e: IllegalArgumentException) {
+                            }
                             return@collect
                         }
                         key == "END" && value == "VEVENT" -> {
@@ -81,7 +88,7 @@ data class IcsCalendar(
                         ICalSection.VTIMEZONE -> timezone[key] = value
                         ICalSection.STANDARD -> timezone.standard[key] = value
                         ICalSection.DAYLIGHT -> timezone.daylight[key] = value
-                        ICalSection.None -> set(key, value)
+                        ICalSection.None -> this[key] = value
                     }
                 }
             }

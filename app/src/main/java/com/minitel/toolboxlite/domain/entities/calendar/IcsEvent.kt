@@ -15,6 +15,20 @@ data class IcsEvent(
     val summary: String,
     val dtstart: LocalDateTime,
 ) : Parcelable {
+    private constructor(builder: Builder) : this(
+        dtend = builder.dtend!!,
+        uid = builder.uid,
+        dtstamp = builder.dtstamp!!,
+        location = builder.location,
+        description = builder.description,
+        summary = builder.summary,
+        dtstart = builder.dtstart!!,
+    )
+
+    companion object {
+        inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
+    }
+
     class Builder {
         var dtend: LocalDateTime? = null
         var uid: String = ""
@@ -24,15 +38,7 @@ data class IcsEvent(
         var summary: String = ""
         var dtstart: LocalDateTime? = null
 
-        fun build() = IcsEvent(
-            dtend = dtend!!,
-            uid = uid,
-            dtstamp = dtstamp!!,
-            location = location,
-            description = description,
-            summary = summary,
-            dtstart = dtstart!!,
-        )
+        fun build() = IcsEvent(this)
 
         operator fun set(key: String, value: String) {
             when (key) {

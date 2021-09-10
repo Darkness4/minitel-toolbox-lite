@@ -13,6 +13,18 @@ data class IcsTimezoneDescription(
     val rRule: String,
     val tzName: String
 ) : Parcelable {
+    private constructor(builder: Builder) : this(
+        dtstart = builder.dtstart!!,
+        tzOffsetTo = builder.tzOffsetTo,
+        tzOffsetFrom = builder.tzOffsetFrom,
+        rRule = builder.rRule,
+        tzName = builder.tzName,
+    )
+
+    companion object {
+        inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
+    }
+
     class Builder {
         var dtstart: LocalDateTime? = null
         var tzOffsetTo: String = ""
@@ -20,13 +32,7 @@ data class IcsTimezoneDescription(
         var rRule: String = ""
         var tzName: String = ""
 
-        fun build() = IcsTimezoneDescription(
-            dtstart = dtstart!!,
-            tzOffsetTo = tzOffsetTo,
-            tzOffsetFrom = tzOffsetFrom,
-            rRule = rRule,
-            tzName = tzName,
-        )
+        fun build() = IcsTimezoneDescription(this)
 
         operator fun set(key: String, value: String) {
             when (key) {

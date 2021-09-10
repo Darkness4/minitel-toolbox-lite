@@ -10,16 +10,22 @@ data class IcsTimezone(
     val daylight: IcsTimezoneDescription,
     val standard: IcsTimezoneDescription,
 ) : Parcelable {
+    private constructor(builder: Builder) : this(
+        tzid = builder.tzid!!,
+        daylight = builder.daylight.build(),
+        standard = builder.standard.build(),
+    )
+
+    companion object {
+        inline fun build(block: Builder.() -> Unit) = Builder().apply(block).build()
+    }
+
     class Builder {
         var tzid: TimeZone? = null
         val daylight = IcsTimezoneDescription.Builder()
         val standard = IcsTimezoneDescription.Builder()
 
-        fun build() = IcsTimezone(
-            tzid = tzid!!,
-            daylight = daylight.build(),
-            standard = standard.build(),
-        )
+        fun build() = IcsTimezone(this)
 
         operator fun set(key: String, value: String) {
             when (key) {
