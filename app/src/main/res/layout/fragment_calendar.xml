@@ -15,6 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.minitel.toolboxlite.presentation.ui.BackgroundView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:color="@color/primaryColor" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_months"
             android:layout_width="match_parent"
