@@ -36,7 +36,8 @@ class BackgroundView(
                     getColor(
                         R.styleable.BackgroundView_color,
                         DEFAULT_COLOR
-                    ), 100
+                    ),
+                    100
                 )
                 foregroundPaint.apply {
                     style = Paint.Style.FILL
