@@ -48,7 +48,8 @@
             <include
                 layout="@layout/item_about_settings"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:viewModel="@{viewModel}" />
 
             <include
                 android:id="@+id/include_licences"

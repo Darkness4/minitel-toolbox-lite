@@ -48,4 +48,16 @@ class SettingsViewModel @Inject constructor(private val calendarSettingsReposito
     fun openLicencesDone() {
         _openLicences.value = null
     }
+
+    private val _openAbout = MutableStateFlow<Unit?>(null)
+    val openAbout: StateFlow<Unit?>
+        get() = _openAbout
+
+    fun doOpenAbout() {
+        _openAbout.value = Unit
+    }
+
+    fun openAboutDone() {
+        _openAbout.value = null
+    }
 }

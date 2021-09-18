@@ -42,18 +42,20 @@ class IcsEventSchedulerImpl @Inject constructor(
             }
         }
 
+        val triggerAtMillis = icsEvent.dtstart.toInstant(
+            ZoneOffset.UTC
+        ).toEpochMilli() - (earlyMinutes * 60000)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager?.setExactAndAllowWhileIdle(
                 AlarmManager.RTC_WAKEUP,
-                icsEvent.dtstart.toInstant(
-                    ZoneOffset.UTC
-                ).toEpochMilli() - (earlyMinutes * 60000),
+                triggerAtMillis,
                 alarmIntent
             )
         } else {
             alarmManager?.setExact(
                 AlarmManager.RTC_WAKEUP,
-                icsEvent.dtstart.toInstant(ZoneOffset.UTC).toEpochMilli() - (earlyMinutes * 60000),
+                triggerAtMillis,
                 alarmIntent
             )
         }

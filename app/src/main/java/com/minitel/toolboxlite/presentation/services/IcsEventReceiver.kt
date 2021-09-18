@@ -3,8 +3,6 @@ package com.minitel.toolboxlite.presentation.services
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.media.RingtoneManager
-import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.minitel.toolboxlite.R
@@ -16,16 +14,13 @@ class IcsEventReceiver : BroadcastReceiver() {
         if (intent.action == CustomIntent.INTENT_ACTION_ALARM) {
             val payload = intent.getParcelableExtra<Notification>("notification")
             payload?.let {
-                val alarmSound: Uri =
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
                 val notification =
                     NotificationCompat.Builder(context, context.getString(R.string.channel_id))
                         .setContentTitle(payload.title)
                         .setContentText(payload.description)
                         .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setVibrate(longArrayOf(1000L))
-                        .setSound(alarmSound)
                         .build()
 
                 with(NotificationManagerCompat.from(context)) {
