@@ -21,9 +21,9 @@
             android:id="@+id/imageView_aboutSettings_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/licences_settings_content_description"
+            android:contentDescription="@string/about_icon_content_description"
             android:padding="16dp"
-            android:src="@drawable/ic_baseline_gavel_24"
+            android:src="@drawable/ic_baseline_info_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -4,7 +4,8 @@ import androidx.datastore.core.DataStore
 import com.minitel.toolboxlite.data.datastore.IcsReference
 import com.minitel.toolboxlite.domain.repositories.IcsReferenceRepository
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.logcat
 import javax.inject.Inject
 
 class IcsReferenceRepositoryImpl@Inject constructor(
@@ -15,7 +16,7 @@ class IcsReferenceRepositoryImpl@Inject constructor(
             .setUsername(username)
             .setPath(path)
             .build()
-        Timber.d("Updated IcsReference $newValue.")
+        logcat(LogPriority.DEBUG) { "Updated IcsReference $newValue." }
         dataStore.updateData { IcsReference.getDefaultInstance() }
         dataStore.updateData { newValue }
     }

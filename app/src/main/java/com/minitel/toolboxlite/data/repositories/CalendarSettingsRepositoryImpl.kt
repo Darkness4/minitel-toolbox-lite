@@ -4,7 +4,8 @@ import androidx.datastore.core.DataStore
 import com.minitel.toolboxlite.data.datastore.CalendarSettings
 import com.minitel.toolboxlite.domain.repositories.CalendarSettingsRepository
 import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.logcat
 import javax.inject.Inject
 
 class CalendarSettingsRepositoryImpl @Inject constructor(
@@ -14,7 +15,7 @@ class CalendarSettingsRepositoryImpl @Inject constructor(
         val newValue = CalendarSettings.newBuilder()
             .setEarlyMinutes(earlyMinutes)
             .build()
-        Timber.d("Updated CalendarSettings $newValue.")
+        logcat(LogPriority.DEBUG) { "Updated CalendarSettings $newValue." }
         dataStore.updateData { newValue }
     }
 

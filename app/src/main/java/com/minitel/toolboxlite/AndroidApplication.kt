@@ -8,7 +8,8 @@ import android.graphics.Color
 import android.os.Build
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.HiltAndroidApp
-import timber.log.Timber
+import logcat.AndroidLogcatLogger
+import logcat.LogPriority
 
 @HiltAndroidApp
 class AndroidApplication : Application() {
@@ -18,9 +19,7 @@ class AndroidApplication : Application() {
         AndroidThreeTen.init(this)
         createNotificationChannel()
 
-        if (BuildConfig.DEBUG) {
-            Timber.plant(Timber.DebugTree())
-        } // You may want to plant a Crashlytics Tree in the else body
+        AndroidLogcatLogger.installOnDebuggableApp(this, minPriority = LogPriority.VERBOSE)
     }
 
     private fun createNotificationChannel() {

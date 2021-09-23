@@ -4,17 +4,15 @@ import com.minitel.toolboxlite.data.database.IcsEventDao
 import com.minitel.toolboxlite.data.models.IcsEventModel
 import com.minitel.toolboxlite.domain.entities.calendar.IcsCalendar
 import com.minitel.toolboxlite.domain.services.IcsDownloader
-import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpStatement
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.readUTF8Line
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDateTime
-import timber.log.Timber
 import javax.inject.Inject
 
 class IcsDownloaderImpl @Inject constructor(
@@ -46,7 +44,7 @@ class IcsDownloaderImpl @Inject constructor(
             val now = LocalDateTime.now()
             eventDao.insert(
                 list.filter { it.dtstart > now || it.dtend > now }
-                    .map { e -> Timber.d("Fetched $e"); IcsEventModel.fromEntity(e) }
+                    .map { e -> IcsEventModel.fromEntity(e) }
             )
         }
     }

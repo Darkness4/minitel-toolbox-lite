@@ -19,7 +19,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
+import logcat.LogPriority
+import logcat.asLog
+import logcat.logcat
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -66,7 +68,7 @@ class LoginFragment : Fragment() {
                             e.localizedMessage ?: "Something wrong happened",
                             Toast.LENGTH_LONG
                         ).show()
-                        Timber.e(e)
+                        logcat(LogPriority.ERROR) { e.asLog() }
                     },
                     onLoading = {
                         Toast.makeText(requireContext(), "Signing in...", Toast.LENGTH_SHORT).show()
@@ -84,7 +86,7 @@ class LoginFragment : Fragment() {
                         e.localizedMessage ?: "Something wrong happened",
                         Toast.LENGTH_LONG
                     ).show()
-                    Timber.e(e)
+                    logcat(LogPriority.ERROR) { e.asLog() }
                 }
                 it?.let { viewModel.downloadFinished() }
             }
@@ -103,7 +105,7 @@ class LoginFragment : Fragment() {
                                     )
                                 }
                             }
-                            Timber.d("Scheduled ${list.size} events.")
+                            logcat(LogPriority.DEBUG) { "Scheduled ${list.size} events." }
                             Toast.makeText(
                                 context,
                                 "Scheduled ${list.size} events.",
