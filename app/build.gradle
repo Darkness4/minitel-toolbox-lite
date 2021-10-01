@@ -173,7 +173,7 @@ dependencies {
     implementation 'com.google.protobuf:protobuf-javalite:3.18.0'
 
     // Http
-    def ktor_version = '1.6.3'
+    def ktor_version = '1.6.4'
     implementation "io.ktor:ktor-client-okhttp:$ktor_version"
     def okhttp_version = '4.9.1'
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
