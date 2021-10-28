@@ -186,7 +186,7 @@ jobs:
         run: echo "TAG=$(git tag --sort=creatordate | tail -2 | head -1)" >> $GITHUB_ENV
       - name: Build Changelog
         id: github_release
-        uses: heinrichreimer/github-changelog-generator-action@v2.2
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           sinceTag: ${{ env.TAG }}
