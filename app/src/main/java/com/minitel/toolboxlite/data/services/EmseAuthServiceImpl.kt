@@ -6,7 +6,7 @@ import com.minitel.toolboxlite.core.errors.FormNotFound
 import com.minitel.toolboxlite.data.ktor.PersistentCookiesStorage
 import com.minitel.toolboxlite.domain.services.EmseAuthService
 import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
+import io.ktor.client.call.body
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -44,7 +44,7 @@ class EmseAuthServiceImpl @Inject constructor(
             persistentCookiesStorage.clear(Url(CAS_URL))
             val formParameters = fetchForm(service)
             val response = postForm(username, password, service, formParameters)
-            val body = response.receive<String>()
+            val body: String = response.body()
             if ("id=\"loginErrorsPanel\"" in body || response.status.value in 400..599) {
                 throw FailedLogin
             }
@@ -63,7 +63,7 @@ class EmseAuthServiceImpl @Inject constructor(
     override suspend fun findIcs(): String = withContext(
         Dispatchers.IO
     ) {
-        val body = client.get<String>(ICS_BASE_URL)
+        val body: String = client.get(ICS_BASE_URL).body()
         return@withContext try {
             Regex("""https(.*)\.ics""").find(body)?.value!!
         } catch (e: RuntimeException) {
@@ -80,11 +80,10 @@ class EmseAuthServiceImpl @Inject constructor(
     private suspend fun fetchForm(service: String): FormParameters = withContext(
         Dispatchers.IO
     ) {
-        val response =
-            client.get<HttpResponse>("$CAS_URL/login") {
+        val body: String =
+            client.get("$CAS_URL/login") {
                 parameter("service", service)
-            }
-        val body = response.receive<String>()
+            }.body()
 
         try {
             val execution =
@@ -102,10 +101,10 @@ class EmseAuthServiceImpl @Inject constructor(
         password: String,
         service: String,
         formParameters: FormParameters
-    ) = withContext(
+    ): HttpResponse = withContext(
         Dispatchers.IO
     ) {
-        return@withContext client.submitForm<HttpResponse>(
+        return@withContext client.submitForm(
             url = "$CAS_URL/login?" + parametersOf("service", service).formUrlEncode(),
             formParameters = Parameters.build {
                 append("username", username)
