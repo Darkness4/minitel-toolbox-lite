@@ -2,7 +2,7 @@ package com.minitel.toolboxlite.data.ktor
 
 import com.minitel.toolboxlite.data.database.CookieDao
 import com.minitel.toolboxlite.data.models.CookieModel
-import io.ktor.client.features.cookies.CookiesStorage
+import io.ktor.client.plugins.cookies.CookiesStorage
 import io.ktor.http.Cookie
 import io.ktor.http.Url
 import io.ktor.util.date.GMTDate
