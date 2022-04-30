@@ -5,9 +5,8 @@ import com.minitel.toolboxlite.data.models.IcsEventModel
 import com.minitel.toolboxlite.domain.entities.calendar.IcsCalendar
 import com.minitel.toolboxlite.domain.services.IcsDownloader
 import io.ktor.client.HttpClient
-import io.ktor.client.call.receive
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpStatement
+import io.ktor.client.call.body
+import io.ktor.client.request.prepareGet
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.readUTF8Line
 import kotlinx.coroutines.Dispatchers
@@ -24,8 +23,8 @@ class IcsDownloaderImpl @Inject constructor(
         Dispatchers.IO
     ) {
         var calendar: IcsCalendar? = null
-        client.get<HttpStatement>(path).execute { response ->
-            val channel: ByteReadChannel = response.receive()
+        client.prepareGet(path).execute { response ->
+            val channel: ByteReadChannel = response.body()
 
             val flow = flow {
                 while (!channel.isClosedForRead) {
