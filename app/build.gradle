@@ -205,7 +205,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.9.1'
 
-    def kotest_version = '5.2.3'
+    def kotest_version = '5.3.0'
     testImplementation "io.mockk:mockk:1.12.3"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines"
     testImplementation "io.kotest:kotest-runner-junit5:$kotest_version"
