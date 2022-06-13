@@ -175,7 +175,7 @@ dependencies {
     // Http
     def ktor_version = '2.0.2'
     implementation "io.ktor:ktor-client-okhttp:$ktor_version"
-    def okhttp_version = '4.9.3'
+    def okhttp_version = '4.10.0'
     implementation "com.squareup.okhttp3:okhttp:$okhttp_version"
     implementation "com.squareup.okhttp3:logging-interceptor:$okhttp_version"
 
