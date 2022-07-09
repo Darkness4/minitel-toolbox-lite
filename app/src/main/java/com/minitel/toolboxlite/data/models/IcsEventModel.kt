@@ -13,7 +13,7 @@ data class IcsEventModel(
     val location: String,
     val description: String,
     val summary: String,
-    val dtstart: LocalDateTime,
+    val dtstart: LocalDateTime
 ) {
     companion object {
         @JvmStatic
@@ -24,7 +24,7 @@ data class IcsEventModel(
             location = e.location,
             description = e.description,
             summary = e.summary,
-            dtstart = e.dtstart,
+            dtstart = e.dtstart
         )
     }
 
@@ -35,6 +35,6 @@ data class IcsEventModel(
         location = location,
         description = description,
         summary = summary,
-        dtstart = dtstart,
+        dtstart = dtstart
     )
 }

@@ -2,20 +2,20 @@ package com.minitel.toolboxlite.presentation.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.minitel.toolboxlite.data.datastore.CalendarSettings
 import com.minitel.toolboxlite.domain.repositories.CalendarSettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(private val calendarSettingsRepository: CalendarSettingsRepository) : ViewModel() {
-    val calendarSettings = calendarSettingsRepository.watch()
+    val calendarSettings: StateFlow<CalendarSettings?> = calendarSettingsRepository.watch()
         .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     val earlyMinutes = MutableStateFlow(0.0f)

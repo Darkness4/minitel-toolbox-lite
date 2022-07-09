@@ -9,7 +9,7 @@ import logcat.logcat
 import javax.inject.Inject
 
 class CalendarSettingsRepositoryImpl @Inject constructor(
-    private val dataStore: DataStore<CalendarSettings>,
+    private val dataStore: DataStore<CalendarSettings>
 ) : CalendarSettingsRepository {
     override suspend fun update(earlyMinutes: Long) {
         val newValue = CalendarSettings.newBuilder()

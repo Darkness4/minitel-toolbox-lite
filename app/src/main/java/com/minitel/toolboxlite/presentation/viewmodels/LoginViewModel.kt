@@ -16,7 +16,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,7 +27,7 @@ class LoginViewModel @Inject constructor(
     private val loginSettingsRepository: LoginSettingsRepository,
     private val icsReferenceRepository: IcsReferenceRepository,
     calendarSettingsRepository: CalendarSettingsRepository,
-    icsEventRepository: IcsEventRepository,
+    icsEventRepository: IcsEventRepository
 ) : ViewModel() {
     val username = MutableStateFlow("")
     val password = MutableStateFlow("")

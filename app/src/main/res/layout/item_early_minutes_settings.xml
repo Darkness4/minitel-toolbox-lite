@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:paddingEnd="16dp"
-            android:text="@{Long.toString(viewModel.calendarSettings.earlyMinutes) + ` minutes`}"
+            android:text="@{Long.toString(viewModel.calendarSettings.getEarlyMinutes()) + ` minutes`}"
             android:textAppearance="?attr/textAppearanceBody2"
             app:layout_constraintBottom_toTopOf="@+id/textView_earlyMinutesSettings_slider"
             app:layout_constraintEnd_toEndOf="parent"

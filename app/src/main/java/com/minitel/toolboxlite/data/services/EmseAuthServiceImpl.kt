@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 private data class FormParameters(
-    val execution: String,
+    val execution: String
 )
 
 class EmseAuthServiceImpl @Inject constructor(
@@ -89,7 +89,7 @@ class EmseAuthServiceImpl @Inject constructor(
             val execution =
                 Regex("""name="execution" value="([^"]*)"""").find(body)?.groupValues?.get(1)!!
             return@withContext FormParameters(
-                execution = execution,
+                execution = execution
             )
         } catch (e: NullPointerException) {
             throw FormNotFound

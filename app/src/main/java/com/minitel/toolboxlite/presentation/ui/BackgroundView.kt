@@ -63,7 +63,7 @@ class BackgroundView(
                 polygonPath1.drawTriangle(
                     0f to 0f,
                     w / 3f to 0f,
-                    0f to h * 4f / 5f,
+                    0f to h * 4f / 5f
                 ),
                 foregroundPaint
             )
@@ -72,7 +72,7 @@ class BackgroundView(
                 polygonPath2.drawTriangle(
                     w * 2f / 5f to 0f,
                     w.toFloat() to 0f,
-                    w.toFloat() to h / 2f,
+                    w.toFloat() to h / 2f
                 ),
                 foregroundPaint
             )
@@ -90,7 +90,7 @@ class BackgroundView(
                 polygonPath4.drawTriangle(
                     0f to h / 2f,
                     w / 2f to h.toFloat(),
-                    0f to h.toFloat(),
+                    0f to h.toFloat()
                 ),
                 foregroundPaint
             )
@@ -99,7 +99,7 @@ class BackgroundView(
                 polygonPath5.drawTriangle(
                     w * 3f / 4f to h.toFloat(),
                     w.toFloat() to h.toFloat(),
-                    w.toFloat() to h / 4f,
+                    w.toFloat() to h / 4f
                 ),
                 foregroundPaint
             )
@@ -108,7 +108,7 @@ class BackgroundView(
                 polygonPath6.drawTriangle(
                     0f to h / 3f,
                     0f to 0f,
-                    w.toFloat() to 0f,
+                    w.toFloat() to 0f
                 ),
                 foregroundPaint
             )

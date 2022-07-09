@@ -41,7 +41,9 @@ class DayListAdapter : ListAdapter<DayListAdapter.DayData, DayListAdapter.ViewHo
         companion object {
             fun create(parent: ViewGroup): ViewHolder {
                 val binding = ItemDayBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
                 binding.recyclerViewEvents.adapter = EventListAdapter()
                 return ViewHolder(binding)

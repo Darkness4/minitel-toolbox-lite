@@ -13,7 +13,7 @@ data class IcsEvent(
     val location: String,
     val description: String,
     val summary: String,
-    val dtstart: LocalDateTime,
+    val dtstart: LocalDateTime
 ) : Parcelable {
     private constructor(builder: Builder) : this(
         dtend = builder.dtend!!,
@@ -22,7 +22,7 @@ data class IcsEvent(
         location = builder.location,
         description = builder.description,
         summary = builder.summary,
-        dtstart = builder.dtstart!!,
+        dtstart = builder.dtstart!!
     )
 
     companion object {

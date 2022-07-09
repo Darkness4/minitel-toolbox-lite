@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class LoginSettingsRepositoryImpl @Inject constructor(
-    private val dataStore: DataStore<LoginSettings>,
+    private val dataStore: DataStore<LoginSettings>
 ) : LoginSettingsRepository {
     override suspend fun update(
         rememberMe: Boolean,

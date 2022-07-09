@@ -27,7 +27,9 @@ class EventListAdapter : ListAdapter<IcsEvent, EventListAdapter.ViewHolder>(Comp
             fun create(parent: ViewGroup) =
                 ViewHolder(
                     ItemEventBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
                     )
                 )
         }

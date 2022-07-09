@@ -8,12 +8,12 @@ import java.util.TimeZone
 data class IcsTimezone(
     val tzid: TimeZone,
     val daylight: IcsTimezoneDescription,
-    val standard: IcsTimezoneDescription,
+    val standard: IcsTimezoneDescription
 ) : Parcelable {
     private constructor(builder: Builder) : this(
         tzid = builder.tzid!!,
         daylight = builder.daylight.build(),
-        standard = builder.standard.build(),
+        standard = builder.standard.build()
     )
 
     companion object {

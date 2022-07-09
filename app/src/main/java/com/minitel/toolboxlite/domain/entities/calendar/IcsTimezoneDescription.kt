@@ -18,7 +18,7 @@ data class IcsTimezoneDescription(
         tzOffsetTo = builder.tzOffsetTo,
         tzOffsetFrom = builder.tzOffsetFrom,
         rRule = builder.rRule,
-        tzName = builder.tzName,
+        tzName = builder.tzName
     )
 
     companion object {

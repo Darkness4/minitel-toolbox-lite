@@ -34,7 +34,7 @@ data class CookieModel(
             path = cookie.path,
             secure = cookie.secure,
             httpOnly = cookie.httpOnly,
-            extensions = cookie.extensions,
+            extensions = cookie.extensions
         )
     }
 
@@ -48,6 +48,6 @@ data class CookieModel(
         path = path,
         secure = secure,
         httpOnly = httpOnly,
-        extensions = extensions,
+        extensions = extensions
     )
 }

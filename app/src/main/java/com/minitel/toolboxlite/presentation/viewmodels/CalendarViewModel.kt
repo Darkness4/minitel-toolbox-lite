@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    icsEventRepository: IcsEventRepository,
+    icsEventRepository: IcsEventRepository
 ) : ViewModel() {
     val months: StateFlow<List<MonthListAdapter.MonthData>> =
         icsEventRepository.watchEventsAfterNow()

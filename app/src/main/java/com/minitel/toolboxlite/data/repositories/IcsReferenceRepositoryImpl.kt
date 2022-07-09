@@ -9,7 +9,7 @@ import logcat.logcat
 import javax.inject.Inject
 
 class IcsReferenceRepositoryImpl@Inject constructor(
-    private val dataStore: DataStore<IcsReference>,
+    private val dataStore: DataStore<IcsReference>
 ) : IcsReferenceRepository {
     override suspend fun update(username: String, path: String) {
         val newValue = IcsReference.newBuilder()

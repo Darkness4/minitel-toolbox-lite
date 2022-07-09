@@ -19,7 +19,7 @@ import org.threeten.bp.format.DateTimeFormatter
 fun formatDateTimeInterval(
     view: TextView,
     dtstart: LocalDateTime,
-    dtend: LocalDateTime,
+    dtend: LocalDateTime
 ) {
     view.text = view.context.getString(R.string.event_time_format).format(
         dtstart.format(DateTimeFormatter.ofPattern("HH:mm")),
@@ -30,7 +30,7 @@ fun formatDateTimeInterval(
 @BindingAdapter("months")
 fun bindMonthList(
     view: RecyclerView,
-    months: List<MonthListAdapter.MonthData>?,
+    months: List<MonthListAdapter.MonthData>?
 ) {
     val adapter = view.adapter as MonthListAdapter
     months?.let {
@@ -41,7 +41,7 @@ fun bindMonthList(
 @BindingAdapter("showWhenMonthsIsEmpty")
 fun showWhenMonthsIsEmpty(
     view: View,
-    months: List<MonthListAdapter.MonthData>?,
+    months: List<MonthListAdapter.MonthData>?
 ) {
     view.visibility = if (months.isNullOrEmpty()) {
         View.VISIBLE
@@ -53,7 +53,7 @@ fun showWhenMonthsIsEmpty(
 @BindingAdapter("days")
 fun bindDayList(
     view: RecyclerView,
-    days: List<DayListAdapter.DayData>?,
+    days: List<DayListAdapter.DayData>?
 ) {
     val adapter = view.adapter as DayListAdapter
     days?.let {
@@ -64,7 +64,7 @@ fun bindDayList(
 @BindingAdapter("events")
 fun bindEventList(
     view: RecyclerView,
-    events: List<IcsEvent>?,
+    events: List<IcsEvent>?
 ) {
     val adapter = view.adapter as EventListAdapter
     events?.let {

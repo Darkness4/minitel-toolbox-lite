@@ -37,7 +37,9 @@ class MonthListAdapter :
         companion object {
             fun create(parent: ViewGroup): ViewHolder {
                 val binding = ItemMonthBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
                 binding.recyclerViewDays.adapter = DayListAdapter()
                 return ViewHolder(binding)

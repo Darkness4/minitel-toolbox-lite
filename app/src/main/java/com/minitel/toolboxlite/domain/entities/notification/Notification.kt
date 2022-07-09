@@ -16,7 +16,7 @@ data class Notification(val id: Int, val title: String, val description: String)
                 icsEvent.dtstart.toLocalTime(),
                 icsEvent.dtend.toLocalTime()
             ),
-            description = icsEvent.summary,
+            description = icsEvent.summary
         )
     }
 }
