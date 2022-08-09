@@ -170,7 +170,7 @@ dependencies {
 
     // DataStore
     implementation 'androidx.datastore:datastore:1.0.0'
-    implementation 'com.google.protobuf:protobuf-javalite:3.21.4'
+    implementation 'com.google.protobuf:protobuf-javalite:3.21.5'
 
     // Http
     def ktor_version = '2.0.3'
