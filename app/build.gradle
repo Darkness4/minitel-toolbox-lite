@@ -169,7 +169,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     // DataStore
-    implementation 'androidx.datastore:datastore:1.0.0'
+    implementation 'androidx.datastore:datastore:1.1.0-dev01'
     implementation 'com.google.protobuf:protobuf-javalite:3.21.7'
 
     // Http
