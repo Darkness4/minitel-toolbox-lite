@@ -181,7 +181,7 @@ dependencies {
 
     // -- Domain dependencies
     // JSR-310 Backport
-    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.1'
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.4.2'
 
     // -- Presentation Dependencies
     // Lifecycle
