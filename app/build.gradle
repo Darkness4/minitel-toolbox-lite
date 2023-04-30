@@ -202,7 +202,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.5.7"
 
     // -- Other dependencies
-    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
     def kotest_version = '5.6.0'
