@@ -203,7 +203,7 @@ dependencies {
 
     // -- Other dependencies
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.1'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.11'
 
     def kotest_version = '5.6.2'
     testImplementation "io.mockk:mockk:1.13.5"
